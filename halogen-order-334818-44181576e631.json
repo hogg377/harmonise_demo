@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "halogen-order-334818",
+  "private_key_id": "44181576e63169c16a09e55283e66cae89cfdf3b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDua7pto83vwp/9\nlTnzFFNRGQ7pc4h8aqXRo1prMUZScNVNYWrIkTAZuz38EY4t0D+XSwgufp27VkUy\n9bUOG3Ap/jxinEH3YtKQEk24NxZsscUnTO+eo0V+4mB4eQgNjEkvNYPA9q04GuB0\nAMjnKCZO5YpzXDpGHlzXxB7fdMqp3NYU4mRF6LqjvcSzNPEGKR87ttFwavPSgXT1\nWxNycFZmMM8OJ3/pKoC8lV5OMB0i2PMINH8q6FEm5FYm1s3oNhAie0U0BlwvLWEs\n9e/KBJ5VDNd9nH5SahhkpHLmCjQEL+OIBI6q6T1RzYNKmPH5MV+/wvYqcsKQiXKk\n8ZdRLld1AgMBAAECggEADca+G3a4armxZUWETIY9+DTSoUJSk8nVHK4WhpTEI6BZ\nxY0ITrWLn3kBGw8SoEAPue4VIhv2gOwlDHhDxssRae5to88JRWz5jhHuBA50Jmyx\nNSpOEDm5RXHO3Dc2Hr5JPkfr0zBjEEJb+if6HoKPOsYrAAEcwY916DvGAuhsi3BW\n2ph2vHgUY4rVN9hvIh7qf26m8B+HHdPzQc7QSbA4AiIFmCjHnNLjYs5edshQCmHj\nhVrRr8fU/4TFaehSchoFAhTHr3w36ZnLH9gmTcNTdHQyh9RSX18QwzrliRqXS0MN\nwi0SG9Q3ZRcgsdZOb7Tcp54u9ejhGQB5p4akfSeWMQKBgQD6ycdQCV+EDKihAP+a\nLIHmLq+730QRub9bYDV+HvYAvHYeYTg1s7drUgxQ/DkR1W57M2yClo+XRXoF2ATH\nOQ/Q+XEzFlNlcz81QnMdTWcicR2miYTzgd8r5mPxbwiXdqPZZGbYHTXjoO4H5v5f\nQE7hcuOD+D0Dz6nEoXh4jJr/+QKBgQDzYCdfH0mqQub7putwkb5BjnoEfW/PbPPq\n1yfxY7ack7M0ZfjCJsS444bhuo+5tyDyClJyAoPfHf3ZjT8uNuAXHDWLNU9nPLX0\nu1EuOsAJZcnrsVglPWX+D6ePLUnOizPW27WrlgzRkEDPgBwJSP5SPGlIWAK6Jzgg\nk9RthwSqXQKBgQCquQ3r2FWjiRKKeCmIhN/xGLsdBAJMpswzoi0ILH9/RMyMJdak\nCDHG51XnE6yuDUNmrz0hMOmTKwLEU6f9D0VLF2QOSRaAq5HN6ex/eB/LfIGYy2ks\nc66/Ldm/k7yfj24/IXA5krkKupUP4BouMZMBOrrTLfwrSgTiDKH8PouN0QKBgA4Y\nv68OzOGDxoVFAdYfWvnJGuAvs8477VTo6XNd5zHijDq4vVPhkvtykll4yOJk7Q+X\n8XaRFrpRrmZve/1dSFWOWLubduHv7koin20iEgV5U9zHBOgDSmkQ1w+/+8pu3a3Q\nRBGQO2XYCSj7rqQLClARF7gNAPtvUhzw8xj0/RwxAoGBAM2lTRMQo1k5F9qGAlWq\nLJ8PyErkh4vIEPQ2OG7h4gxaArvg3wHBZ1JK7tzKC3tZ4roY8dnox2Vhla/MMnGY\ni4YIEjdTei8w/yZ8fTQDq/dXeM5stf2/HAlZtS0B2yNO0Hy8E5R2PlGvdE5cnPvT\nwIxcQO1qdoRoWvC8K53Lqiir\n-----END PRIVATE KEY-----\n",
+  "client_email": "empowerment-project@halogen-order-334818.iam.gserviceaccount.com",
+  "client_id": "100928954750823096855",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/empowerment-project%40halogen-order-334818.iam.gserviceaccount.com"
+}
