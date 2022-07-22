@@ -1317,21 +1317,29 @@ def avoidance(swarm, map):
 	########### Add repulsion from endpoints of walls ##################
 
 
-	# endpoints = np.concatenate((map.limh, map.limv))
+	endpoints = np.concatenate((map.limh, map.limv))
 	# print('Wall endpoints: ', map.limh.T)
-	# print('Wall endpoints: ', endpoints)
+	# print('Wall endpoints: ', map.walls)
 
-	# end_mag = cdist(swarm.agents, endpoints)
+	new_array = [tuple(row) for row in map.walls]
+	uniques = np.unique(new_array, axis = 0)
 
-	# diff = swarm.agents[:,:,np.newaxis] - endpoints.T[np.newaxis,:,:] 
+	# print('Remove endpoint duplicates: ', uniques)
+	# print('Length difference is ', len(map.walls) - len(uniques))
 
-	# R = 30; r = 2
+	endpoints = uniques
 
-	# repel = R*r*np.exp(-end_mag/r)[:,np.newaxis,:]*diff/(swarm.size-1)	
-	# # print('repel shape: ', repel)
-	# repel = np.sum(repel, axis = 2)
+	end_mag = cdist(swarm.agents, endpoints)
 
-	# F -= repel
+	diff = swarm.agents[:,:,np.newaxis] - endpoints.T[np.newaxis,:,:] 
+
+	R = 20; r = 2
+
+	repel = R*r*np.exp(-end_mag/r)[:,np.newaxis,:]*diff/(swarm.size-1)	
+	# print('repel shape: ', repel)
+	repel = np.sum(repel, axis = 2)
+
+	F -= repel
 	
 
 	swarm.wallCollision_state = np.logical_or(np.sum(detected_collisionsH, axis = 1), np.sum(detected_collisionsV, axis = 1))

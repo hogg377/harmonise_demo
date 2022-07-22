@@ -48,6 +48,7 @@ import numpy as np
 import pickle
 import sys
 import time 
+import importlib       
 
 
 import matplotlib.pyplot as plt
@@ -895,24 +896,25 @@ def saveAndQuit():
 #end function
 
 
-def sim_animate(i, timesteps, control_active):
+def sim_animate(i, timesteps, control_active, agent_pos, max_length,
+                                trails, malicious_trails, faulty_pos,
+                                sim_speed, totSwarm_size):
 
     # Check gird intersection
     #grid_check(swarmy)
     global score
-    global happy_agents
-    global unhappy_agents
+    global swarmy
+    global malicious_swarm
+    global agent_set
+    # global malicious_trails
+    # global unhappy_agents
     global agent_trails
     global maliciousAgent_trails
-
-    global agent_set
-    global plot_happiness
-    global swarmy
     start = time.time()
 
 
     # ---------------------------- Spawn agents from edge of environment over time -------------------------------------
-
+    # agent_set = np.arange(0, totSwarm_size, 1)
     total_agentSize = swarmy.size + malicious_blockers
     # input()
     pos_variance = 4
@@ -921,6 +923,7 @@ def sim_animate(i, timesteps, control_active):
         # At each step pick a random agent to spawn
         pick = np.random.choice(agent_set)
         agent_set = np.delete(agent_set, np.where(agent_set == pick)[0])
+        print('The agent set: ', agent_set)
         if pick < malicious_blockers:
             # spawn a malicious agent
             malicious_swarm.agents[pick] = np.array([swarmy.map.swarm_origin[0], swarmy.map.swarm_origin[1]])
@@ -944,25 +947,16 @@ def sim_animate(i, timesteps, control_active):
         faulty_swarm.collision_check(swarmy, malicious_swarm)
     swarmy.iterate(malicious_swarm, noise[i-1])
 
-
-    # print('Swarm happiness: ', swarmy.happiness)
-    # print('Swarm opinion timer: ', swarmy.opinion_timer)
-    # print('swarm previous states:', swarmy.previous_state)
-
-    # swarmy.behaviour = np.random.randint(1,9, swarmy.size)
+   
     if blockers_active == True:
         malicious_swarm.iterate(malicious_noise[i-1])
         malicious_swarm.get_state()
-    #print('swarm beh: ', swarmy.behaviour)
-    # print(swarmy.behaviour)
+
 
     swarmy.get_state_opinion()
     swarmy.get_state()
-    #swarmy.died += asim.boundary_death(swarmy, swarmy.map)
     score += targets.get_state(swarmy, i, timesteps)
 
-
-    #repellents.set_data(swarmy.beacon_rep.T[0],swarmy.beacon_rep.T[1])
 
     time_data.append(i)
     coverage_data.append(targets.coverage)
@@ -972,16 +966,9 @@ def sim_animate(i, timesteps, control_active):
     x = agents.T[0]
     y = agents.T[1]
 
-    
+    agent_pos.set_data(x,y)
 
-    time_text.set_text('Time: (%d/%d)' % (i, timesteps))
-
-    #box_text.set_text('Fitness: %.2f' % (score/len(targets.targets)))
-    cov_text.set_text('Coverage: %.2f' % (targets.coverage))
-
-    #mass.set_data(swarmy.centermass[0], swarmy.centermass[1])
-
-    agent_trails = np.concatenate((agent_trails, swarmy.agents), axis =0)
+    agent_trails = np.concatenate((agent_trails, swarmy.agents), axis = 0)
 
     if len(agent_trails) > max_length:
 
@@ -998,48 +985,13 @@ def sim_animate(i, timesteps, control_active):
 
     malicious_trails.set_data(maliciousAgent_trails.T[0], maliciousAgent_trails.T[1])
 
-    
 
-    # Plot with or without agent happiness
-    if plot_happiness == True:
-
-        setA = swarmy.agents[swarmy.happiness <= 0.5]
-        setB = swarmy.agents[swarmy.happiness > 0.5]
-
-        happy_agents.set_data(setB.T[0], setB.T[1])
-        unhappy_agents.set_data(setA.T[0], setA.T[1])
-        agent_pos.set_data([],[])
-
-    else:
-
-        agent_pos.set_data(x,y)
-        happy_agents.set_data([],[])
-        unhappy_agents.set_data([],[])
-
-
-    # Highlight agents which are faulty
-    if plot_faulty == True and len(faulty_indicies) != 0:
-
-        positions = swarmy.agents[agents_withFaults == 1]
-        # print('fault position data: ', positions)
-        faulty_pos.set_data(positions.T[0] + 1, positions.T[1] + 1)
-    else:
-        faulty_pos.set_data([],[])
-
-
- 
-
-    # cov_line.set_data(time_data, coverage_data)
 
     taken = 1000*(time.time() - start)
     sim_speed.append(taken)
     
-    # return (line1, line2, line3, time_text, box_text,cov_text, 
-    #       agent_headings, trails, malicious_trails,agent_pos, behaviour_text, cov_line, 
-    #       happy_agents, unhappy_agents, faulty_pos)
-    return (time_text,cov_text, 
-            agent_headings, trails, malicious_trails,agent_pos, 
-            happy_agents, unhappy_agents, faulty_pos)
+ 
+    return (trails, malicious_trails, agent_pos, faulty_pos, )
 
 
 
@@ -1084,30 +1036,10 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     # Load data from config file ----------------------------
 
-    import importlib
     config = importlib.import_module(config_file_name)
     cfg = config.main()
     print(cfg)
 
-
-    global time_text
-    global cov_text
-    global box_text
-    global agent_pos
-    global malicious_trails
-    global malicious_trails
-    global line1
-    global line2
-    global line3
-    global agent_trails
-    global max_length
-    global trails
-    global maliciousAgent_trails
-    global happy_agents
-    global unhappy_agents
-    global faulty_pos
-    global agent_headings
-    global sim_speed
 
     fig, ax1 = plt.subplots( figsize=(10,10), dpi=80, facecolor='w', edgecolor='k')
    
@@ -1118,44 +1050,18 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     random_pos = [(0,0),(10,10),(20,34)]
 
    
-    # Type of agent plotting
+    # ---------- ----------------- Setup for data plotting --------------------------------------
+
     agent_pos, = ax1.plot([], [], 'rh', markersize = 8, markeredgecolor="black", alpha = 1, zorder=10)
 
-    happy_agents, = ax1.plot([], [], 'gh', markersize = 8, markeredgecolor="green", alpha = 1, zorder=10)
-    unhappy_agents, = ax1.plot([], [], 'rh', markersize = 8, markeredgecolor="black", alpha = 1, zorder=10)
-
     faulty_pos, = ax1.plot([], [], 'r*', markersize = 8, alpha = 1, zorder=10)
-
-    repellents, = ax1.plot([], [], 'ro', markersize=70, alpha=0.3)
 
     trails, = ax1.plot([], [], 'bh', markersize = 6, alpha = 0.2)
     malicious_trails, = ax1.plot([], [], 'bh', markersize = 6, alpha = 0.2)
 
 
-
-    # shadow plotting
-    line1, = ax1.plot([], [], 'bh', markersize = 6, markeredgecolor="black", alpha = 0.1)
-    line2, = ax1.plot([], [], 'bh', markersize = 6, markeredgecolor="black", alpha = 0.1)
-    line3, = ax1.plot([], [], 'bh', markersize = 6, markeredgecolor="black", alpha = 0.1)
-
-    low_emp, = ax1.plot([], [], 'ro', markersize = 8, markeredgecolor="red", alpha = 0.05)
-    high_emp, = ax1.plot([], [], 'go', markersize = 8, markeredgecolor="green", alpha = 0.05)
-
-    agent_headings, = ax1.plot([], [], 'm*', markersize = 4, alpha = 0.9)
-
     fsize = 12
 
-    time_text = ax1.text(-20, 42, '', fontsize = fsize)
-    box_text = ax1.text(3, 42, '', color = 'red', fontsize = fsize)
-    cov_text = ax1.text(20, 42, '', color = 'blue', fontsize = fsize)
-    # cov_line, = ax2.plot([],[], 'r-', markersize = 5, label='Social')
-
-    behaviour_text = ax1.text(3, 45, '', color = 'purple', fontsize = fsize)
-
-    def init():
-    
-        line1.set_data([], [])
-        return ( line1,)
 
     seed = random.randrange((2**32) - 1)
     seed = 99999
@@ -1165,6 +1071,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     print('\nChosen seed: ', seed)
 
+    #          Creat environment object
     env_map = asim.map()
     env_map.map1()
     env_map.swarm_origin = np.array([44,15])
@@ -1191,16 +1098,12 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     # global timesteps
 
-    timesteps = 300
+    timesteps = cfg["timesteps"]
 
 
     # ===================== Swarm Faults/Malicious behaviours =========================
 
-
     totSwarm_size = cfg["swarm_size"]
-
-    # Swarm faults
-
     # positive sensor error added to distance measurement between agents
     num_sensorfault = cfg["faulty_num"]
     # Channels of communication between certain robots is completely lost
@@ -1248,13 +1151,9 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     time_data = list()
 
     global agent_set
-
-    agent_set = np.arange(0, totSwarm_size, 1)
-    
-
-
     global swarmy
     global malicious_swarm
+    
 
     swarmy = faulty_swarm.swarm()
     swarmy.size = totSwarm_size - malicious_blockers
@@ -1300,13 +1199,14 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     time_data = []
     happy_data = []
 
-    # ax1.plot(targets.targets.T[0], targets.targets.T[1], 'bo')
 
 
 
     # Set the length of agent trails in simulation
     max_length = 10*swarmy.size
     #max_length = 200000000000000*swarmy.size
+    global agent_trails
+    global maliciousAgent_trails
     agent_trails = 1000*np.ones((swarmy.size, 2))
     maliciousAgent_trails = 1000*np.ones((swarmy.size, 2))
 
@@ -1325,6 +1225,9 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
 
     #====================== Assign robots which will have faults =================================
+
+    # Create list of all robots for random selection 
+    agent_set = np.arange(0, totSwarm_size, 1)
 
 
     #  ----------  Agents with sensor error fault ----------- 
@@ -1437,14 +1340,12 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     sim_speed = list()
 
-    anim = animation.FuncAnimation(fig, sim_animate, init_func=init,
-                            frames=timesteps, interval=30, blit=True, repeat = False,
-                            fargs = (timesteps, control_active,))
+
+    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=10, blit=True, repeat = False,
+                            fargs = (timesteps, control_active, agent_pos, max_length,
+                                trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
 
     plt.show()
-    # Note: below is the part which makes it work on Colab
-    #rc('animation', html='jshtml')
-    # anim.save('outputs/malicious/advPres/happiness.mp4', fps=25, dpi=100)
     anim
 
   
