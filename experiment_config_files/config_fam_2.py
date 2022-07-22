@@ -18,7 +18,7 @@ def saveConfig(fname = 'cfg.npy'):
     # set the world size to an integer (between 5 and 80 works ok on a HD screen)
     world_sz = 60
     cfg = {"swarm_size": 20, "faulty_num": 0, "mal_blockers_num": 0, "mal_comms_num": 0,
-            "timesteps": 1000}    
+            "timesteps": 1000, "repulsion_strength": 10}    
     np.save(fname, cfg)
 
 

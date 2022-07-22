@@ -306,27 +306,58 @@ def information_sheet1_setup():
 
 
 
-def instructions_menu_setup():
+def instructions_menu_setup1():
     global menu_screen
     title1 = ("Please read the instructions carefully\n")
 
-    text1 = ("In this experiment, you will observe and control a team of virtual robots*,\nworking together to explore an environment.\n"
+    text1 = ("In this experiment, you will observe and interact with a team of virtual robots.\n\n" 
 
-             "The Robot are represented by red points, with blue trails showing \ntheir footprints as they travel\n"
-             
+        "Your task is to identify whether this team is operating properly or if it contains ‘faulty’ robots or ‘malicious’ robots."
 
-             "The task must be completed *quickly* and *efficiently*, i.e., using the *minimum number of dogs*.\n \n"
-             "You will complete *two* blocks of 12 trials.\nWhen each trial starts, some dogs will try to move the sheep towards the safe area.\n"
+        "\n- Faulty robots have flaws that cause them to behave abnormally. "
 
-              "You will help by using your mouse buttons to *add* or *remove* dogs at any point.\n"
-              "-- *Adding* dogs may help your team to complete the task more *quickly* --\n"
-              "-- *Removing* dogs may help your team to complete the task more *efficiently* --\n\n"
+        "\n- Malicious robots deliberately try to disrupt the team. "
 
-              "For some trials it may not be possible to move all sheep into the safe area in the time available.\nIn such cases, please try to move them *as close to the safe area as possible*.\n\n"
+        "\n\nBoth can tend to prevent a team from completing their task effectively. "
+        "\nYou will carry out two blocks of 12 trials. In the one block of trials, you can give \n"
+        "commands to the robots to help them carry out their task. In the other, you can only \nobserve the behaviour of the robots."
+        
 
-              "At the end of each trial, you will be asked to answer a few short questions.\n"
-              "Please answer these question promptly and move on to the next trial quickly.\n\n"
-              "Before the experiment starts, a tutorial will explain how the trials work.\n")
+        "\n\nAt the end of each trial, you will be asked to answer a few short questions. "
+
+        "\nPlease answer these questions promptly and move on to the next trial quickly. "
+
+        "\nBefore the experiment starts, a tutorial will explain how the trials work.\n")
+    
+    SCREEN_W, SCREEN_H = menu_screen.get_size()
+    BORDER = 20
+    menu = pygame_menu.Menu('Experiment Instructions', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
+    menu.add.label(title1, max_char=max_char, font_size=title_size, align=pygame_menu.locals.ALIGN_LEFT)
+    menu.add.label(text1, max_char=max_char, font_size=text_size)  # , align=pygame_menu.locals.ALIGN_LEFT)
+    # menu.add.button('Ok', set_menu_id, 30,font_size=20)
+    menu.add.button('Ok', set_menu_id, 21, font_size=button_size)
+
+    ##### !!!!!!!!!!!!! Point to run experiment, skipping tutorial
+    # menu.add.button('Ok', run_experiment, font_size=button_size)
+    return menu
+#end function
+
+def instructions_menu_setup2():
+    global menu_screen
+    title1 = ("Robot Team Task\n")
+
+    text1 = ("A dangerous chemical accident has occurred in a small factory."
+
+            "\n\nA team of simple robots enters the factory to explore the entire space as quickly\n" 
+            "as possible to check for people that have not been evacuated. "
+
+            "\n\nThe robots do not have a map and are not particularly sophisticated searchers – they explore at random.  "
+
+            "\n\nHowever, they can communicate with nearby team members to help avoid getting stuck in corners, etc. \n"
+            "Robots let nearby team members know if their current direction of travel is successful or not. \n"
+            "This allows robots that are blocked by a wall to copy the direction of travel \n"
+            "of nearby team members that are moving successfully.\n ")
+    
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu('Experiment Instructions', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
@@ -338,15 +369,14 @@ def instructions_menu_setup():
     ##### !!!!!!!!!!!!! Point to run experiment, skipping tutorial
     # menu.add.button('Ok', run_experiment, font_size=button_size)
     return menu
-#end function
 
 
 def tutorial_start_menu_setup():
     """ Generates a menu for explaning and starting the tutorial """
     global menu_screen
-    title = "Swarm Exploration Tutorial"
-    text = ("This tutorial will help you become familiar with the swarm exploration task.\n\n"
-            "The tutorial is arranged into 4 parts.\n"
+    title = "Robot Exploration Tutorial"
+    text = ("This tutorial will help you become familiar with the robot team's task.\n\n"
+            "The tutorial is arranged into 3 parts.\n"
             "You can repeat the tutorial until you are comfortable with the task.\n\n"
             "Press 'Ok' to Start. \n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
@@ -362,14 +392,14 @@ def tutorial_start_menu_setup():
 def tutorial_part1_setup():
     """ Generates a menu for the first part of the tutorial """
     global menu_screen
-    title = "Tutorial Part 1: Swarm Exploration"
-    text = ("In Part 1, you will see a swarm of 20 robots exploring an environment.\n\n"
-            "Each robot attempts to explore freely, switching their direction of travel \nwhen encountering obstacles or large groups of other robots.\n"
-            "Robots co-operate by sharing which directions of travel allow them to explore the best.\n"
-            "Robots only communicate in a small radius of 5 meters. \nThe environment shown covers 40x40 meters.\n\n"
+    title = "Tutorial Part 1: Robot Exploration"
+    text = ("In Part 1, you will see a team of 20 very simple robots exploring working together properly.\n\n"
+
+            "Their joint task is to visit as much of the environment as possible during the fixed time available.\n"
+            "Each robot attempts to move freely and avoid collisions."
             
-            "You will see the swarm spread out into the environment using this behaviour.\n"
-            "Whilst some robots will often retrace the same areas, \noverall the swarm will spread out into the environment.\n\n"
+            "\n\nWhilst some robots will often retrace the same areas and may occasionally get stuck or "
+            "\nsuffer a collision, overall, the team will tend to spread out into the environment.\n\n"
             
             "Press 'Ok' to Start Part 1. \n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
@@ -381,7 +411,7 @@ def tutorial_part1_setup():
     menu.add.button('OK', run_swarmsim, 32, TUTORIAL_SEQUENCE_A[0], font_size=button_size)
     # menu.add.button('Start', run_tutorial)
     if DEBUG_MODE_B:
-        menu.add.button('Skip (Debug)', set_menu_id, 32)
+        menu.add.button('Skip (Debug)', set_menu_id, 35)
         menu.add.button('Main Menu (Debug)', set_menu_id, 0)
     return menu
 #end function
@@ -390,12 +420,15 @@ def tutorial_part1_setup():
 def tutorial_part2_setup():
     """ Generates a menu for the second part of the tutorial """
     global menu_screen
-    title = "Tutorial Part 2: Removing Dogs to the Kennel"
-    text = ("In Part 2, you will see *one* sheep being herded by *six* dogs.\n\n"
-            "Use your *right* mouse button to *remove* some dogs to the doghouse.\n"
-            "(A dog near the location of your cursor will disappear when you click.)\n"
-            "Watch the remaining team complete the herding task *more efficiently*.\n\n"
-            "Press 'Ok' to Start Part 2. \n")
+    title = "Tutorial Part 2: Robot Control"
+    text = ("\nIn some experiment trials, you will have some control over the robot team.\n\n"
+            
+            "In these trials, you can direct all the robots to travel, North, or East, or South, or West \n"
+            "for a short period by pressing an arrow key on your keyboard."
+
+            "\n\nPress Ok to start the tutorial and use the arrow keys to help the robots \nto explore more effectively."
+
+            "\nPress 'Ok' to Start Part 2. \n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
@@ -416,21 +449,23 @@ def tutorial_part2_setup():
 def tutorial_part3_setup():
     """ Generates a menu for the third part of the tutorial """
     global menu_screen
-    title = "Tutorial Part 3: Speed"
-    text = ("In Part 3, your team is *struggling* to herd a flock of sheep.\n\n"
-            "It will take a long time for your team to complete the task.\n"
-            "Adding one or two dogs will help the team to work more *quickly*.\n"
-            "Completing the task more quickly will *increase* your team's performance score.\n \n"
-            "Press 'Ok' to start Part 3 (or you can choose to repeat Parts 1 and 2)\n")
+    title = "Tutorial Part 3: Robot Collisions"
+    text = ("\nProperly operating robots try hard to avoid colliding with walls and with each other, \n"
+            "but collisions may still occur occasionally, particularly in crowded conditions such as \n"
+            "at the start of each trial."
+            
+            "\n\nWhen robots collide, they briefly become stuck before they can continue exploring."
+            "\nThe following simulation shows an example of this occurring in a team of \nproperly functioning robots."
+            "\n\nPress 'Ok' to start Part 3 (or you can choose to repeat Parts 1 and 2)\n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label(text, max_char=max_char, font_size=title_size)
-    menu.add.button('OK', run_swarmsim, 34, TUTORIAL_SEQUENCE_A[2], font_size=button_size)
+    menu.add.button('OK', run_swarmsim, 35, TUTORIAL_SEQUENCE_A[2], font_size=button_size)
     menu.add.button('Repeat Parts 1 and 2', set_menu_id, 31)
     # menu.add.button('Start', run_tutorial)
     if DEBUG_MODE_B:
-        menu.add.button('Skip', set_menu_id, 32)
+        menu.add.button('Skip', set_menu_id, 35)
         menu.add.button('Main Menu', set_menu_id, 0)
     return menu
 #end function
@@ -463,9 +498,9 @@ def tutorial_complete_setup():
     """ Generates a menu for after the final part of the tutorial has been completed """
     global menu_screen
     title = "Tutorial Complete"
-    text = ("Congratulations, you've completed the tutorial!\n\n"
+    text = ("Congratulations, you have completed the tutorial!\n\n"
             "Press 'Continue' to start the experiment.\n"
-            "Or, you can repeat some or all of the Tutorial. \n")
+            "Or, you can repeat the Tutorial. \n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
@@ -473,8 +508,8 @@ def tutorial_complete_setup():
 
     # ------------- Button points to start the experimental blocks -----------------
     menu.add.button('Continue to the Experiment', run_experiment)
-    menu.add.button('Repeat Parts 3 and 4 of the Tutorial', set_menu_id, 33)
-    menu.add.button('Repeat the Whole Tutorial', set_menu_id, 31)
+    # menu.add.button('Repeat Parts 3 and 4 of the Tutorial', set_menu_id, 33)
+    menu.add.button('Repeat the Tutorial', set_menu_id, 31)
     # menu.add.button('Repeat', set_menu_id, 30)
     return menu
 #end function
@@ -491,10 +526,11 @@ def experimental_block_1_setup():
     title = "Experiment Block (Passive)"
     text = ("You will now be presented with a block of trials.\n\n"
 
-            "Your task is to observe the swarm and identify any fault or malicious behaviour. \n\n"
-            "Remember: the swarm will try to explore the environment, covering as much space as possible."
+            "Your task is to observe the robot team and identify whether the team is operating properly, "
+            "\nor if some of the robots are faulty, or if some of the robots are malicious. \n\n"
+            "Remember: the team's task is to explore the whole building as quickly as possible."
 
-            "Press 'Continue' to start the block.\n")
+            "\n\nPress 'Continue' to start the block.\n")
             # "If you wish to repeat the tutorial, press 'Repeat Tutorial'\n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
@@ -510,15 +546,17 @@ def experimental_block_2_setup():
     global menu_screen
     # show the third screen
     title = "Experimental Block (Active)"
-    text = ("You will now be presented with a block of trials where you can control the swarm.\n\n"
+    text = ("You will now be presented with a block of trials where you have some \ncontrol over the robot team.\n\n"
 
-            "In these trials, you can direct the whole swarm \n*North, East, South or West*, using the direction keys.\n"
-            "Using these controls you should help the swarm explore whilst also \nlooking for any faulty or malicious behaviour\n\n"
+            "In these trials, you can direct all the robots to travel, North, or East, or South, or West \n"
+            "for a short period by pressing an arrow key on your keyboard."
 
-            "Your task is to observe the swarm and identify any fault or malicious behaviour. \n\n"
-            "Remember: the swarm will try to explore the environment, covering as much space as possible."
+            "\n\nUsing these controls, you should help the team of robots to complete their task."
+            "\nYour task is to observe the swarm and identify any fault or malicious behaviour. \n\n"
 
-            "Press 'Continue' to start the block.\n")
+            "Remember: the team's task is to explore the whole building as quickly as possible."
+
+            "\nPress 'Continue' to start the block.\n")
 
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
@@ -660,7 +698,7 @@ def test_start_setup(list_of_configs, control_active, show_empowerment, use_task
 
     # menu.add.button('Go', run_simulation, 91, '', list_of_configs, show_empowerment, use_taskweighted_empowerment)
 
-    menu.add.button('Go', run_swarmsim, 91, '', list_of_configs, control_active, show_empowerment, use_taskweighted_empowerment)
+    menu.add.button('Go', run_swarmsim, 92, '', list_of_configs, control_active, show_empowerment, use_taskweighted_empowerment)
 
 
 
@@ -694,20 +732,21 @@ def post_test_questions_setup2():
     global menu_screen
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    SLIDER_VALUES = {0: 'not at all', 1: '', 2: '', 3: '', 4: '', 5: '', 6: 'completely'}
+    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree or Disagree', 4: '', 5: '', 5: '',7: 'Strongly Disagree'}
+    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Don't Know", 4: '', 5: '', 5: '',7: 'Malicious'}
     menu = pygame_menu.Menu('Well Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label('Please answer the following two questions promptly...\n', max_char=max_char, font_size=title_size)
     
-    menu.add.label('Regardless of how well you feel your team performed,\nto what extent did you feel **engaged in the task**?', max_char=max_char, font_size=title_size, underline=False)
+    menu.add.label('Use the slider to indicate the extent of which you agree with the following statement: \n"The team contained some robots that were not operating properly"', max_char=max_char, font_size=title_size, underline=False)
     
-    menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
-    menu.add.range_slider('', default=3, range_values=list(SLIDER_VALUES.keys()), increment=1, rangeslider_id='engaged', width=500, range_line_height=10, 
-        range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: SLIDER_VALUES[x])
+    # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
+    menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='engaged', width=500, range_line_height=10, 
+        range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q1_VALUES[x])
     
-    menu.add.label('\nRegardless of how well you feel your team performed,\nto what extent did you feel *part of the team*?', max_char=max_char, font_size=title_size)
-    menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
-    menu.add.range_slider('', default=3, range_values=list(SLIDER_VALUES.keys()), increment=1, rangeslider_id='part_of_team', width=500, range_line_height=10, 
-        range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: SLIDER_VALUES[x])
+    menu.add.label('\nTo what extent do you believe that any robots in the team that \nwere not operating properly, were faulty or malicious?', max_char=max_char, font_size=title_size)
+    # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
+    menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='part_of_team', width=500, range_line_height=10, 
+        range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q2_VALUES[x])
     menu.add.button('Done', set_menu_id, 90, menu, True)
     # menu.add.button('Main Menu', set_menu_id, 0)
     return menu
@@ -862,7 +901,7 @@ def run_experiment():
             control_active = True
 
         else:
-            print("I'm running the empowerment NOT shown block")
+            print("I'm running the PASSIVE block")
             # set which menu to start in
             current_menu_id = 40
             # determine the order to run the sequence
@@ -875,6 +914,7 @@ def run_experiment():
         # shuffle the test sequence order
         print(f"I'm running experiment block {block} with the config order {config_order}")
         configs = configs[config_order]
+        print('Configs for experiment block')
         run_experimental_block(configs.tolist(), control_active, show_empowerment, use_taskweighted_empowerment)
 
     # set the menu ID to the post experiment questions and debreif
@@ -918,7 +958,7 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
     total_agentSize = swarmy.size + malicious_blockers
     # input()
     pos_variance = 4
-    if i%7 == 0 and len(agent_set) >= 1:
+    if i%9 == 0 and len(agent_set) >= 1:
 
         # At each step pick a random agent to spawn
         pick = np.random.choice(agent_set)
@@ -1073,7 +1113,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     #          Creat environment object
     env_map = asim.map()
-    env_map.map1()
+    env_map.map1_simplified()
     env_map.swarm_origin = np.array([44,15])
     env_map.gen()
 
@@ -1157,10 +1197,13 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     swarmy = faulty_swarm.swarm()
     swarmy.size = totSwarm_size - malicious_blockers
-    swarmy.speed = 0.4
+    swarmy.speed = 0.3
     swarmy.origin = env_map.swarm_origin[:]
     swarmy.map = env_map
     swarmy.gen_agents()
+
+    # Set agent to agent repulsion
+    swarmy.param = cfg["repulsion_strength"]
 
 
 
@@ -1341,7 +1384,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     sim_speed = list()
 
 
-    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=10, blit=True, repeat = False,
+    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=25, blit=True, repeat = False,
                             fargs = (timesteps, control_active, agent_pos, max_length,
                                 trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
 
@@ -1474,7 +1517,8 @@ def main():
     # information_3_m = information_sheet3_setup()
     # information_4_m = information_sheet4_setup()
     # information_5_m = information_sheet5_setup()
-    instructions_m = instructions_menu_setup()
+    instructions_m1 = instructions_menu_setup1()
+    instructions_m2 = instructions_menu_setup2()
     details_m = details_setup()
     # debrief_setup_m = debrief_setup()
     # personal_details_m = personal_details_setup()
@@ -1516,8 +1560,11 @@ def main():
             # information_5_m.draw(menu_screen)
             pass
         elif current_menu_id == 20:
-            instructions_m.update(events)
-            instructions_m.draw(menu_screen)
+            instructions_m1.update(events)
+            instructions_m1.draw(menu_screen)
+        elif current_menu_id == 21:
+            instructions_m2.update(events)
+            instructions_m2.draw(menu_screen)
         # menu_id 30-35 are handled in run_tutorial()
         # menu_id 40,50,90-92 are handled in run_experiment()
         elif current_menu_id == 60:

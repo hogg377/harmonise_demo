@@ -662,6 +662,57 @@ class map(object):
 
 		#corridor = environment.corridor(30, 5, 'horizontal', [30,-10]); [self.obsticles.append(corridor.walls[x]) for x in range(0, len(corridor.walls))]
 
+	def map1_simplified(self):
+
+		self.dimensions = [80,80]
+
+		wall = environment.wall(); wall.start = [45,10]; wall.end = [45,20]; self.obsticles.append(wall)
+		wall = environment.wall(); wall.start = [40,10]; wall.end = [45,10]; self.obsticles.append(wall)
+		wall = environment.wall(); wall.start = [40,20]; wall.end = [45,20]; self.obsticles.append(wall)
+
+
+
+		# Bounding Walls ---------------------------------
+		# box = environment.box(80, 80, [0, 0]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
+		wall = environment.wall(); wall.start = [-40,40]; wall.end = [40,40]; self.obsticles.append(wall)
+		wall = environment.wall(); wall.start = [-40,40]; wall.end = [-40,-40]; self.obsticles.append(wall)
+		wall = environment.wall(); wall.start = [40,10]; wall.end = [40,-40]; self.obsticles.append(wall)
+		wall = environment.wall(); wall.start = [-30,-40]; wall.end = [40,-40]; self.obsticles.append(wall)
+
+
+		room = environment.room(20, 20, 7, 'top', [0, 0]); [self.obsticles.append(room.walls[x]) for x in range(0, len(room.walls))]
+
+		room = environment.room(20, 20, 7, 'bottom', [0, 30]); [self.obsticles.append(room.walls[x]) for x in range(0, len(room.walls))]
+
+		room = environment.room(20, 30, 7, 'bottom', [25, 30]); [self.obsticles.append(room.walls[x]) for x in range(0, len(room.walls))]
+
+		#doorway = environment.doorway(30, 7, 'horizontal', [25, 10]); [self.obsticles.append(doorway.walls[x]) for x in range(0, len(doorway.walls))]
+
+		# wall = environment.wall(); wall.start = [10,10]; wall.end = [40,10];
+		# self.obsticles.append(wall)
+		doorway = environment.doorway(30, 7, 'horizontal', [25, 10]); [self.obsticles.append(doorway.walls[x]) for x in range(0, len(doorway.walls))]
+		
+
+		# box = environment.box(3, 3, [20, 0]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
+		# box = environment.box(3, 3, [30, 0]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
+		# box = environment.box(3, 3, [20, -10]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
+		# box = environment.box(3, 3, [30, -10]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
+
+		doorway = environment.doorway(30, 7, 'horizontal', [25, -20]); [self.obsticles.append(doorway.walls[x]) for x in range(0, len(doorway.walls))]
+		doorway = environment.doorway(30, 7, 'vertical', [10, -25]); [self.obsticles.append(doorway.walls[x]) for x in range(0, len(doorway.walls))]
+
+		doorway = environment.doorway(30, 7, 'horizontal', [-25, -10]); [self.obsticles.append(doorway.walls[x]) for x in range(0, len(doorway.walls))]
+
+		room = environment.room(30, 10, 7, 'right', [-35, -25]); [self.obsticles.append(room.walls[x]) for x in range(0, len(room.walls))]
+
+		box = environment.box(15, 3, [-2, -25]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
+		box = environment.box(15, 3, [-18, -25]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
+
+		box = environment.box(30, 5, [-25, 15]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
+
+		#corridor = environment.corridor(30, 5, 'horizontal', [30,-10]); [self.obsticles.append(corridor.walls[x]) for x in range(0, len(corridor.walls))]
+
+
 	def map2(self):
 
 		self.dimensions = [80,80]
