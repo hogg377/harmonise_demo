@@ -104,7 +104,7 @@ sys.path.append(CONFIG_DIR)
 
 # --------------GLOBAL VARIABLES------------
 # These initial values shouldn't be changed unless you know what you're doing!!
-DEBUG_MODE_B = True
+DEBUG_MODE_B = False
 SCREEN_RESOLUTION = (1280, 720)
 menu_screen = pygame.display.set_mode((1280, 720))
 current_menu_id = 1
@@ -1030,6 +1030,8 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
     taken = 1000*(time.time() - start)
     sim_speed.append(taken)
     
+    if (i == timesteps - 1):
+        plt.close()
  
     return (trails, malicious_trails, agent_pos, faulty_pos, )
 
@@ -1384,7 +1386,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     sim_speed = list()
 
 
-    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=25, blit=True, repeat = False,
+    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=0, blit=True, repeat = False,
                             fargs = (timesteps, control_active, agent_pos, max_length,
                                 trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
 
