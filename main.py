@@ -32,7 +32,7 @@ import pygame_menu
 import runSimulation as sim
 import colours
 import gspread
-import model.MenuLog as MenuLog
+# import model.MenuLog as MenuLog
 import os
 import sys
 #-------------------------------------------------
@@ -43,6 +43,7 @@ import simulation.map_gen as map_gen
 import simulation.environment
 import simulation.asim as asim
 import simulation.faulty_swarm as faulty_swarm
+import model.dataLogger as dataLogger
 import random
 import numpy as np
 import pickle
@@ -68,7 +69,8 @@ from scipy.spatial.distance import cdist, pdist, euclidean
 # -----------------DIRECTORIES, PATHS AND CONFIGURATIONS-----------------------
 # Set the configuration and results directories folders
 CONFIG_DIR = "experiment_config_files/"
-RESULTS_DIR = os.path.join(os.path.expanduser('~'), "OneDrive - University of Bristol", "Empowerment Results")
+# RESULTS_DIR = os.path.join(os.path.expanduser('~'), "OneDrive - University of Bristol", "Empowerment Results")
+RESULTS_DIR = os.path.join('Results/')
 print('Result DIR: ', RESULTS_DIR)
 
 # Credentials needed to log to a google sheet
@@ -160,22 +162,25 @@ def set_menu_id(menu_id, menu=[], save_details_b=False):
     global last_config_run
 
     # If the current menu is directly related to a simulation then keep a record of the config name used in that simulation
-    if current_menu_id == 91 or current_menu_id == 92:
+    if current_menu_id == 92:
         current_config = last_config_run
     else:
         current_config = 'none'
 
     # If true then pass the calling menu through a function which extracts any user inputs and stores them in a format for easy recall and logging
     #   The menu ID MUST be known to menu_log
+    # if save_details_b:
+    #     menu_log.save_responses(menu, current_menu_id, current_config)
     if save_details_b:
         menu_log.save_responses(menu, current_menu_id, current_config)
+
 
     # Set the current menu id which will cause the menu rendering function to change which menu is displayed
     current_menu_id = menu_id
 
     # -1 is a special menu which causes the program to exit cleanly
     if menu_id == -1:
-        saveAndQuit()   
+        saveAndQuit()
     return
 #end function
 
@@ -740,12 +745,12 @@ def post_test_questions_setup2():
     menu.add.label('Use the slider to indicate the extent of which you agree with the following statement: \n"The team contained some robots that were not operating properly"', max_char=max_char, font_size=title_size, underline=False)
     
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
-    menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='engaged', width=500, range_line_height=10, 
+    menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q1_VALUES[x])
     
     menu.add.label('\nTo what extent do you believe that any robots in the team that \nwere not operating properly, were faulty or malicious?', max_char=max_char, font_size=title_size)
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
-    menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='part_of_team', width=500, range_line_height=10, 
+    menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q2_VALUES[x])
     menu.add.button('Done', set_menu_id, 90, menu, True)
     # menu.add.button('Main Menu', set_menu_id, 0)
@@ -826,9 +831,9 @@ def run_experimental_block(list_of_configs, control_active, show_empowerment, us
         elif current_menu_id == 90:
             # These lines reset the sliders on the post question menus to their default values.  
             #   There may be a better way to do this via a call back.
-            post_test_questions_m1.get_widget('time').reset_value()
-            post_test_questions_m2.get_widget('engaged').reset_value()
-            post_test_questions_m2.get_widget('part_of_team').reset_value()
+            # post_test_questions_m1.get_widget('time').reset_value()
+            post_test_questions_m2.get_widget('faultOrMal').reset_value()
+            post_test_questions_m2.get_widget('behaviour_perception').reset_value()
             test_start_setup_m.update(events)
             test_start_setup_m.draw(menu_screen)
         
@@ -946,11 +951,16 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
     global swarmy
     global malicious_swarm
     global agent_set
+    global SimLogger
     # global malicious_trails
     # global unhappy_agents
     global agent_trails
     global maliciousAgent_trails
     start = time.time()
+
+    # Automatically close the simulation 
+    if i == timesteps - 1:
+        plt.close()
 
 
     # ---------------------------- Spawn agents from edge of environment over time -------------------------------------
@@ -963,7 +973,7 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
         # At each step pick a random agent to spawn
         pick = np.random.choice(agent_set)
         agent_set = np.delete(agent_set, np.where(agent_set == pick)[0])
-        print('The agent set: ', agent_set)
+        # print('The agent set: ', agent_set)
         if pick < malicious_blockers:
             # spawn a malicious agent
             malicious_swarm.agents[pick] = np.array([swarmy.map.swarm_origin[0], swarmy.map.swarm_origin[1]])
@@ -1073,6 +1083,10 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     print(f'running a simulation with config {config_file_name} and #test {test_number}, exiting to menu {exit_to_menu}')
     # if not DEBUG_MODE_B:
     #     sim.main(config_file_name, show_empowerment, use_task_weighted_empowerment, sim_session_id=session_id, log_file_name=config_name_with_parameters)
+
+
+    # ======================= Very important! needs to be set in order to save the config name for results =====================
+    last_config_run = config_name_with_parameters
 
     # Load data from config file ----------------------------
 
@@ -1210,7 +1224,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     if blockers_active == True:
         malicious_swarm = faulty_swarm.malicious_swarm()
         malicious_swarm.size = malicious_blockers
-        malicious_swarm.speed = 0.5
+        malicious_swarm.speed = 0.3
         malicious_swarm.origin = env_map.swarm_origin[:]
         malicious_swarm.map = env_map
         malicious_swarm.gen_agents()
@@ -1218,7 +1232,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     else:
         malicious_swarm = faulty_swarm.malicious_swarm()
         malicious_swarm.size = 10
-        malicious_swarm.speed = 0.5
+        malicious_swarm.speed = 0.3
         malicious_swarm.origin = env_map.swarm_origin[:]
         malicious_swarm.map = env_map
         malicious_swarm.gen_agents()
@@ -1383,13 +1397,19 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     sim_speed = list()
 
+    # Creat simulation data logger
+
+    global SimLogger
+    SimLog = dataLogger.Simlogger()
+
+    SimLog.initialise(session_id, config_file_name, seed, control_active)
 
     anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=25, blit=True, repeat = False,
                             fargs = (timesteps, control_active, agent_pos, max_length,
                                 trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
 
     plt.show()
-    anim
+    # anim
 
   
 
@@ -1406,6 +1426,8 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 def on_press(event):
     # print('press', event.key)
     # sys.stdout.flush()
+
+    # Handle keyboard input for interactive trials
     if event.key == 'up':
         swarmy.behaviour = 1*np.ones(swarmy.size)
     if event.key == 'left':
@@ -1418,15 +1440,15 @@ def on_press(event):
     swarmy.opinion_timelimit = 50*np.ones(swarmy.size)
     # sys.stdout.flush()
 
-    global plot_happiness
-    global plot_faulty
+    # global plot_happiness
+    # global plot_faulty
 
-    if event.key == 'h':
-        # turn on/off agent happiness display
-        plot_happiness = np.logical_not(plot_happiness)
-    if event.key == 'j':
-        # turn on/off agent happiness display
-        plot_faulty = np.logical_not(plot_faulty)
+    # if event.key == 'h':
+    #     # turn on/off agent happiness display
+    #     plot_happiness = np.logical_not(plot_happiness)
+    # if event.key == 'j':
+    #     # turn on/off agent happiness display
+    #     plot_faulty = np.logical_not(plot_faulty)
 
 
 def run_tutorial():
@@ -1502,7 +1524,8 @@ def main():
     generate_session_id()
 
     # Cetup the logging for user responses entered on the menus
-    menu_log = MenuLog.MenuLog(session_id)
+    # menu_log = MenuLog.MenuLog(session_id)
+    menu_log = dataLogger.MenuLog(session_id)
 
     # Create and setup the pygame window/screen
     menu_screen = create_start_screen();  

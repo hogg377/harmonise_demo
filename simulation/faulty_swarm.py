@@ -1333,7 +1333,7 @@ def avoidance(swarm, map):
 
 	diff = swarm.agents[:,:,np.newaxis] - endpoints.T[np.newaxis,:,:] 
 
-	R = 18; r = 1.5
+	R = 15; r = 1.5
 
 	repel = R*r*np.exp(-end_mag + r)[:,np.newaxis,:]*diff/(swarm.size-1)	
 	# print('repel shape: ', repel)
