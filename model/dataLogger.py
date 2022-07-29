@@ -101,6 +101,65 @@ class MenuLog:
         fileo.close()
         return
 
+    def save_toexcel(self):
+
+        import pickle
+        import xlsxwriter
+        import openpyxl
+
+        # entry = '20220729T150923'
+
+        with open(r"Results/"+self.session_id+"/user_details.pkl", "rb") as input_file:
+            user_details = pickle.load(input_file)
+
+        with open(r"Results/"+self.session_id+"/post_test_responses.pkl", "rb") as input_file:
+            question_responses = pickle.load(input_file)
+
+        # with open(r"Results/"+entry+"/config_fam_2_Active.pkl", "rb") as input_file:
+        #   sim_data = pickle.load(input_file)
+
+
+        # print(user_details)
+        # print('\n\n', question_responses)
+        # print(sim_data['user_log'])
+
+
+        directory = 'Results/' + self.session_id + '/summary.xlsx'
+
+
+        workbook = openpyxl.load_workbook('template.xlsx')
+
+        sheet = workbook.active
+
+        print(sheet["C11"].value)
+        sheet["C12"] = 'hello'
+
+        # Write personal details
+
+        # sheet["C3"] = user_details['name']
+        sheet["C1"] = user_details[0]
+        sheet["C4"] = str(user_details[1]['birth'])
+        sheet["C5"] = user_details[1]['sex']
+        sheet["C6"] = user_details[1]['vision'][0][0]
+        sheet["C7"] = user_details[1]['colour'][0][0]
+
+        row = 12
+        col = 2
+
+
+        for i in range(len(question_responses[1])):
+
+            sheet.cell(row = row, column=col).value = question_responses[1][i]
+
+            # behaviour scores
+            sheet.cell(row = row, column=col + 1).value = question_responses[2][question_responses[1][i]]['behaviour_perception']
+
+            sheet.cell(row = row, column=col + 2).value = question_responses[2][question_responses[1][i]]['faultOrMal']
+
+            row += 1
+
+        workbook.save(filename=directory)
+
 
 
 class AgentState:
@@ -210,127 +269,3 @@ class UserInputs:
     #end function
 
 
-
-class SimLogger:
-    def __init__(self) -> None:
-        #logging lists
-        
-        self.user_log = UserInputs()
-        self.user_log.initialise()
-        #self.config = ''
-        #self.session_id = ''
-        self.meta = {}
-
-        self.robot_pos = None
-        self.faulty_id = None
-        self.mal_id = None
-        self.happiness = None
-        self.coverage = None
-
-    def initialise(self, session_id, config_name, seed, control_active):
-        
-        self.robot_pos = None
-        self.faulty_id = None
-        self.mal_id = None
-        self.happiness = None
-        self.coverage = None
-
-        self.user_log = UserInputs()
-        self.user_log.initialise()
-        #self.config = config_name
-        #self.session_id = session_id
-        self.meta = {   'config_name' : config_name, 
-                        'session_id' : session_id,
-                        'sim_seed' : seed,
-                        'start_time' : None, 
-                        'end_time' : None, 
-                        'control_active' : control_active
-                        }
-
-    def record_Step(self, agents, ):
-
-        # Save robot positions
-
-    def record_coverage(self, coverage):
-
-        # Save coverage data for whole trial
-        self.coverage = coverage
-
-    def save_agentId(self, )
-
-    def recordStartTime(self, time):
-        self.meta['start_time'] = time
-        return
-
-
-    def recordEndTime(self, time):
-        self.meta['end_time'] = time  
-        return     
-
-
-    def getList(self, type):
-        if type=='dog':
-            m_list = self.dog_logs
-        elif type=='sheep':
-            m_list = self.sheep_logs
-        return m_list
-
-
-
-
-    def logPopulationStates(self, type, population, time):
-        m_list = self.getList(type)
-
-        for agent in population.m_agents:
-            #if the agent is a dog then it will have an empowerment value else set the default to -1 (sheep don't calculate empowerment)
-            #TODO add empowerment to the sheep class (or agent class!) and set the default to -1 then all agents would have the agent.m_empowerment parameter but only dogs update it
-            if type =='dog':
-                empowerment_value = agent.m_empowerment
-            else:
-                empowerment_value = -1
-
-            m_list[agent.m_id].update(time, agent.m_position, empowerment_value)
-        return
-
-
-    def logPopulations(self, populations, time):
-        #size a numpy array to hold the agent ids and agent times
-        n_agents = 0
-        for pop in populations:
-            n_agents+=len(pop.m_agents)
-
-        #iniitalise the numpy arrays to hold the world state
-        ids_at_t = np.zeros(n_agents)
-        positions_at_t = np.zeros((n_agents,2))
-
-        #itterate through each agent in each population storing their id and position in the master lists
-        idx = 0
-        for pop in populations:
-            for agent in pop.m_agents:
-                ids_at_t[idx] = agent.m_id
-                positions_at_t[idx,:] = agent.m_position
-                idx+=1
-
-        #store the results
-        self.world_at_t[time] = {'ids' : ids_at_t, 'positions' : positions_at_t}
-        return
-
-
-    def pickleLog(self, file_name):
-        import pickle
-        data = {
-            'robot_pos' : self.robot_pos,
-            'faulty_id' : self.faulty_id,
-            'mal_id' : self.mal_id,
-            'happiness' : self.happiness,
-            'coverage' : self.coverage,
-            'user_log' : self.user_log,
-            'meta_data' : self.meta
-        }
-        fileo = open(f'{file_name}.pkl', 'wb')
-        pickle.dump(data, fileo)
-        fileo.close()
-        return
-
-
-  
