@@ -260,7 +260,7 @@ def start_menu_setup():
     global current_menu_id
     menu = pygame_menu.Menu('Welcome', 800, 500,
                         theme=our_theme)
-    menu.add.text_input('Please enter your participant number here: ', default='', textinput_id='participantnumber', input_underline='_', input_underline_len=12)                    
+    menu.add.text_input('Please enter your participant number here: ', default='', textinput_id='participantnumber', input_underline='_', input_underline_len=8)                    
     menu.add.button('Start', set_menu_id, 20, border_width=2)  # this is the information section, just renamed the button as START for congruency with the QUIT button
     # menu.add.button('Instructions', set_menu_id, 20)
     # menu.add.button('Enter Details', set_menu_id, 40)
@@ -724,10 +724,9 @@ def post_test_questions_setup1():
     SLIDER_VALUES = np.arange(0, 20.5, 0.5).tolist()
     menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label('Please answer the following question...\n', max_char=max_char, font_size=title_size)
-    menu.add.label('Use the slider to indicate how many seconds elapsed\nbetween your final mouse click and the end of the trial:\n', max_char=max_char, font_size=title_size)
+    menu.add.text_input('Type (in seconds) how long you think this trial \ntook from start to finish:\n', default='', textinput_id='time', input_underline='_', input_underline_len=5, max_char=max_char, font_size=title_size)
 
-    menu.add.range_slider('', default=10, range_values=SLIDER_VALUES, increment=0.5, rangeslider_id='time', width=500, range_line_height=10, 
-        range_text_value_color=(255, 0, 125), range_text_value_enabled=False, range_text_value_tick_number=3)
+
 
     menu.add.button('Done', set_menu_id, 92, menu, True)
     # menu.add.button('Main Menu', set_menu_id, 0)
@@ -750,7 +749,7 @@ def post_test_questions_setup2():
     menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q1_VALUES[x])
     
-    menu.add.label('\nIf you agree with the statement, please indicate whether you felt the robots \nwere faulty or malicious. If you disagree with the statement, \nor if you are unsure, leave the slider in the centre', max_char=max_char, font_size=title_size)
+    menu.add.label('\nIf you agree with the statement above, please indicate whether you felt the robots were \nfaulty or malicious. If you disagree with the statement, or if you are unsure, \nleave the slider in the centre', max_char=max_char, font_size=title_size)
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
     menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q2_VALUES[x])
@@ -1404,7 +1403,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     # Creat simulation data logger
 
     global SimLogger
-    SimLog = dataLogger.Simlogger()
+    SimLog = dataLogger.SimLogger()
 
     SimLog.initialise(session_id, config_file_name, seed, control_active)
 

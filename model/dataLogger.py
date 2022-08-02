@@ -14,10 +14,12 @@ class MenuLog:
                         #'date': '',
                         #'name60' : '',
                         #'date60' : '',
+                        'participantnumber' : '',
                         'english' : '',
                         'colour': '',
-                        'birth' : '',
-                        'sex' : ''
+                        'age' : '',
+                        'gender' : '',
+                        'games' : ''
                         # consent is handled in paper formating following feedback from beta trials
                         # 'consent14': False,
                         #'final_consent': False
@@ -53,12 +55,14 @@ class MenuLog:
             pass
 
         elif menu_id == 60:
+            self.user_details['participantnumber'] = data['participantnumber']
             self.user_details['english'] = data['english']
             self.user_details['vision'] = data['vision']
             self.user_details['colour'] = data['colour']
             #self.user_details['name60'] = data['name']
-            self.user_details['birth'] = data['birth']
-            self.user_details['sex'] = data['sex']
+            self.user_details['age'] = data['age']
+            self.user_details['gender'] = data['gender']
+            self.user_details['games'] = data['games']
             #self.user_details['date60'] = data['date']
             pass
 
@@ -248,7 +252,7 @@ class SimLogger:
                         }
 
     def record_Step(self, agents, ):
-
+        print("record step")
         # Save robot positions
 
     def record_coverage(self, coverage):
@@ -256,7 +260,8 @@ class SimLogger:
         # Save coverage data for whole trial
         self.coverage = coverage
 
-    def save_agentId(self, )
+    def save_agentId(self, ):
+        print("save agent")
 
     def recordStartTime(self, time):
         self.meta['start_time'] = time
