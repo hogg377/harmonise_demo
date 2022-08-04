@@ -259,8 +259,7 @@ def start_menu_setup():
     # create the menu
     global current_menu_id
     menu = pygame_menu.Menu('Welcome', 800, 500,
-                        theme=our_theme)
-    menu.add.text_input('Please enter your participant number here: ', default='', textinput_id='participantnumber', input_underline='_', input_underline_len=8)                    
+                        theme=our_theme)                   
     menu.add.button('Start', set_menu_id, 20, border_width=2)  # this is the information section, just renamed the button as START for congruency with the QUIT button
     # menu.add.button('Instructions', set_menu_id, 20)
     # menu.add.button('Enter Details', set_menu_id, 40)
@@ -617,7 +616,8 @@ def details_setup():
 
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label(text, max_char=max_char, font_size=title_size)
-
+    menu.add.text_input('Please enter your participant number here: ', default='', textinput_id='participantnumber', input_underline='_', input_underline_len=8) 
+    
     menu.add.text_input('Age (in numbers):  ', default='', textinput_id='age', input_underline='_', input_underline_len=12)
     menu.add.dropselect(title='Gender:', items=[('Female',0),('Male',1),('Non-Binary',2),('Prefer Not to Say',3)],dropselect_id = 'gender', font_size=title_size, selection_option_font_size=title_size-2)
     #menu.add.text_input('Is English your first language? (Y/N):  ', default='', textinput_id='english', input_underline='_', input_underline_len=0)
