@@ -1424,6 +1424,8 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     
     # increment the number of tests completed
     test_number += 1
+
+    print("got here")
     return
 
 def on_press(event):
