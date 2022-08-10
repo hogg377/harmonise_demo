@@ -6,34 +6,28 @@ Dependencies are:
 +   opencv for recording videos of simulation runs
 +   treelib for creating branching trees of potential paths used in the empowerment calculation
 +   matplotlib (only needed for empowermentTest) to visualise empowerment values for a static set of positions
++   xlsxwriter for writing results to an excel file
 
 ```bash
-pip3 install numpy scipy matplotlib pygame treelib opencv-python==4.3.0.36
+pip3 install numpy scipy matplotlib pygame treelib opencv-python==4.3.0.36 xlsxwriter
 # For linux users:
 pip3 install PyQt5
 ```
 
-Exectute "Visualise.py" to run the model.  This will:
-+   Create a "World" which records the position of all the agents
-+   Create a pygame screen to visalise where the agents are
-+   Create a pack "Population" and a flock "Population"
-+   Create two "Sheep" and one "Dog", both a subclass of "Agent"
-+   Setup everything using the config in "config.py"
-+   Run the model in a pygame style loop until the user closes the pygame screen window
+Exectute "main.py" to run the experiment. This will:
++ Launch pygame and the experiment interface.
++ follow the suequence of tutorial phases
++ enter either the passive or active block of the experiment 
++ the trail order in each block is randomized
 
-The stucture of the main loop is:
-1.  Call "update" on the pack and flock populations.
-2.  The populations then call "update" on their respective agent types
-3.  The agents update their view of the world and decide where they want to move
-4.  An agent moves by seting its new position in the World's self.m_next_grid.
-    The World may not allow the move if it's outside the boundary or occupied by another agent.
-    The agent may then ask what positions it could move to and pick one of those instead.
-5.  Once an agent has finished its update, the population will also update the agent's sprite
-    to match the agent's position.
-6.  One all agent's have moved, the World advances one tick by copying it's self.m_next_grid
-    to self.m_grid and self.m_grid to self.m_grid_previous
-7.  The screen is redrawn and updated on screen.
-8.  back to 1.
+Data recording:
+
+For each experimental participant, a unique folder is created given the time the simulation was launched.
+This folder contains the simulation data for each trial, given by the config name.
+User details and question responses are also stored into two additional files.
+
+On completing each experiment, some of the key data is loaded into a summary excel spreadsheet.
+
 
 Current status:
 ---------------
