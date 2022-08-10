@@ -28,17 +28,12 @@ class swarm(object):
 
 		self.param = 3
 		self.map = 'none'
-		
 
 		self.origin = np.array([0,0])
 		self.start = np.array([])
 
 		self.died = 0
 		self.shadows = []
-		self.funcdict = {"random": asim.random_walk, "rot_clock": asim.rotate}
-
-
-		self.beh_beacons = None
 
 		self.time = 0
 

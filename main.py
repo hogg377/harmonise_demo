@@ -29,7 +29,7 @@ Menu IDS are:
 #----------------EXTERNAL MODULES-----------------
 import pygame
 import pygame_menu
-import runSimulation as sim
+# import runSimulation as sim
 import colours
 import gspread
 # import model.MenuLog as MenuLog
@@ -44,6 +44,8 @@ import simulation.environment
 import simulation.asim as asim
 import simulation.faulty_swarm as faulty_swarm
 import model.dataLogger as dataLogger
+import model.SimLog as SimLog
+
 import random
 import numpy as np
 import pickle
@@ -106,7 +108,7 @@ sys.path.append(CONFIG_DIR)
 
 # --------------GLOBAL VARIABLES------------
 # These initial values shouldn't be changed unless you know what you're doing!!
-DEBUG_MODE_B = False
+DEBUG_MODE_B = True
 SCREEN_RESOLUTION = (1280, 720)
 menu_screen = pygame.display.set_mode((1280, 720))
 current_menu_id = 1
@@ -131,6 +133,7 @@ def generate_session_id():
     global session_id
     from datetime import datetime
     session_id = datetime.now().strftime("%Y%m%dT%H%M%S")
+    os.mkdir(RESULTS_DIR + session_id)
 #end function
 
 
@@ -160,6 +163,7 @@ def set_menu_id(menu_id, menu=[], save_details_b=False):
     global current_menu_id
     global menu_log
     global last_config_run
+    global control_active
 
     # If the current menu is directly related to a simulation then keep a record of the config name used in that simulation
     if current_menu_id == 92:
@@ -183,7 +187,6 @@ def set_menu_id(menu_id, menu=[], save_details_b=False):
         saveAndQuit()
     return
 #end function
-
 
 def run_simulation(exit_to_menu, config_file_name='', list_of_configs=[], show_empowerment=True, use_task_weighted_empowerment=False):
     """
@@ -738,8 +741,8 @@ def post_test_questions_setup2():
     global menu_screen
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree nor Disagree', 4: '', 5: '', 6: '',7: 'Strongly Disagree'}
-    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Don't Know/Operating Properly", 4: '', 5: '', 6: '',7: 'Malicious'}
+    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree nor Disagree', 4: '', 5: '',6: 'Strongly Disagree'}
+    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Don't Know/Operating Properly", 4: '', 5: '',6: 'Malicious'}
     menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
     
@@ -866,6 +869,7 @@ def run_experiment():
     global menu_screen
     global current_menu_id
     import numpy as np
+    global control_active
 
     # Initialise the dynamic parameters to be set later
     show_empowerment = None
@@ -898,6 +902,7 @@ def run_experiment():
     for block in block_order:
         if block == 'empowerment_shown':
             # set which menu to start in
+            print("I'm running the ACTIVE block")
             current_menu_id = 50
             # determine the order to run the sequence
             config_order = np.random.permutation(len(LIVETEST_SEQUENCE_A))
@@ -937,6 +942,8 @@ def saveAndQuit():
     """
     global menu_log
     menu_log.pickleLog(os.path.join(RESULTS_DIR, session_id, ""))
+
+    menu_log.save_toexcel()
     exit()
     return
 #end function
@@ -952,17 +959,20 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
     global swarmy
     global malicious_swarm
     global agent_set
-    global SimLogger
+    global SimRecorder
     # global malicious_trails
     # global unhappy_agents
     global agent_trails
     global maliciousAgent_trails
+    global coverage_data
     start = time.time()
+
 
     # Automatically close the simulation 
     if i == timesteps - 1:
         plt.close()
 
+    swarmy.time = i
 
     # ---------------------------- Spawn agents from edge of environment over time -------------------------------------
     # agent_set = np.arange(0, totSwarm_size, 1)
@@ -1040,6 +1050,12 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
 
     taken = 1000*(time.time() - start)
     sim_speed.append(taken)
+
+    # ---------------- Data Logging --------------------
+
+    # Pass in positions of healthy swarm and malicious agents (blockers)
+
+    # SimRecorder.record_Step(agents)
     
     if (i == timesteps - 1):
         plt.close()
@@ -1077,11 +1093,17 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     #   i.e. those which are set at runtime rather than written in the config file
     #   These are useful for naming log files!
     config_name_with_parameters = config_file_name
-    if show_empowerment:
-        config_name_with_parameters = config_name_with_parameters + "_empshown"
+    # if show_empowerment:
+    #     config_name_with_parameters = config_name_with_parameters + "_empshown"
 
-    if use_task_weighted_empowerment:
-        config_name_with_parameters = config_name_with_parameters + "_taskweighted"
+    # if use_task_weighted_empowerment:
+    #     config_name_with_parameters = config_name_with_parameters + "_taskweighted"
+
+    if control_active == True:
+        config_name_with_parameters = config_file_name + "_active"
+    else:
+        config_name_with_parameters = config_file_name + "_passive"
+
 
     print(f'running a simulation with config {config_file_name} and #test {test_number}, exiting to menu {exit_to_menu}')
     # if not DEBUG_MODE_B:
@@ -1138,14 +1160,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     ax1.set_ylim([-44,44])
     ax1.set_xlim([-44,44])
 
-    # ax2.set_ylim([0,1])
-
     plt.legend(loc="upper left")
-
-
-    # [ax1.plot([env_map.obsticles[a].start[0], env_map.obsticles[a].end[0]], 
-    #   [env_map.obsticles[a].start[1], env_map.obsticles[a].end[1]], '-', 
-    #           color = 'black', lw=3, markeredgecolor = 'black', markeredgewidth = 3) for a in range(len(env_map.obsticles))]
 
     # ----------- Plot walls except the opening entry point ---------
     for a in range(len(env_map.obsticles)):
@@ -1251,15 +1266,11 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     targets = asim.target_set()
     targets.radius = 2.5
     targets.set_state('4x4')
-    targets.reset()
-
-    
+    targets.reset()   
     
     coverage_data = []
     time_data = []
     happy_data = []
-
-
 
 
     # Set the length of agent trails in simulation
@@ -1402,19 +1413,29 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     # Creat simulation data logger
 
-    global SimLogger
-    SimLog = dataLogger.SimLogger()
+    global SimRecorder
+    # import model.SimLog
+    SimRecorder = SimLog.data_recorder()
 
-    SimLog.initialise(session_id, config_file_name, seed, control_active)
+    SimRecorder.initialise(session_id, config_file_name, seed, control_active)
 
-    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=2, blit=True, repeat = False,
+    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=20, blit=True, repeat = False,
                             fargs = (timesteps, control_active, agent_pos, max_length,
                                 trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
 
     plt.show()
     # anim
 
-  
+    # Save the coverage achieved 
+    SimRecorder.record_coverage(coverage_data)
+
+    if control_active == True:
+        file_name = 'Results/' + session_id +'/'+ config_file_name + '_Active'
+    else:
+        file_name = 'Results/' + session_id +'/'+ config_file_name + '_Passive'
+
+    # Save simulation data to file
+    SimRecorder.pickleLog(file_name)
 
     # Not sure if this is always needed but to be on the safe side, recreate the menu window after the simulation window closes.
     menu_screen = create_start_screen()
@@ -1431,7 +1452,8 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 def on_press(event):
     # print('press', event.key)
     # sys.stdout.flush()
-
+    global SimRecorder
+    
     # Handle keyboard input for interactive trials
     if event.key == 'up':
         swarmy.behaviour = 1*np.ones(swarmy.size)
@@ -1443,6 +1465,13 @@ def on_press(event):
         swarmy.behaviour = 3*np.ones(swarmy.size)
     swarmy.opinion_timer = 1*np.ones(swarmy.size)
     swarmy.opinion_timelimit = 50*np.ones(swarmy.size)
+
+    # print('The time is ', swarmy.time)
+
+    SimRecorder.user_log.record_event(event.key, swarmy.time)
+    # print('User input log: ', SimRecorder.user_log.events)
+
+    # ---------- Record command event
     # sys.stdout.flush()
 
     # global plot_happiness
