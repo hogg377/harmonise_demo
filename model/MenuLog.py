@@ -26,10 +26,15 @@ class MenuLog:
                         #'date60' : '',
                         'english' : '',
                         'colour': '',
+<<<<<<< HEAD
                         'birth' : '',
                         'sex' : '',
                         'vision': '',
                         'name' : ''
+=======
+                        'age' : '',
+                        'gender' : ''
+>>>>>>> upstream/master
                         # consent is handled in paper formating following feedback from beta trials
                         # 'consent14': False,
                         #'final_consent': False
@@ -94,9 +99,9 @@ class MenuLog:
             self.user_details['vision'] = data['vision']
             self.user_details['colour'] = data['colour']
             #self.user_details['name60'] = data['name']
-            self.user_details['birth'] = data['birth']
-            self.user_details['sex'] = data['sex']
-            self.user_details['name'] = data['name']
+
+            self.user_details['age'] = data['age']
+            self.user_details['gender'] = data['gender']
             #self.user_details['date60'] = data['date']
             pass
 

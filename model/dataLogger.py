@@ -14,10 +14,12 @@ class MenuLog:
                         #'date': '',
                         #'name60' : '',
                         #'date60' : '',
+                        'participantnumber' : '',
                         'english' : '',
                         'colour': '',
-                        'birth' : '',
-                        'sex' : ''
+                        'age' : '',
+                        'gender' : '',
+                        'games' : ''
                         # consent is handled in paper formating following feedback from beta trials
                         # 'consent14': False,
                         #'final_consent': False
@@ -53,12 +55,14 @@ class MenuLog:
             pass
 
         elif menu_id == 60:
+            self.user_details['participantnumber'] = data['participantnumber']
             self.user_details['english'] = data['english']
             self.user_details['vision'] = data['vision']
             self.user_details['colour'] = data['colour']
             #self.user_details['name60'] = data['name']
-            self.user_details['birth'] = data['birth']
-            self.user_details['sex'] = data['sex']
+            self.user_details['age'] = data['age']
+            self.user_details['gender'] = data['gender']
+            self.user_details['games'] = data['games']
             #self.user_details['date60'] = data['date']
             pass
 
@@ -267,5 +271,129 @@ class UserInputs:
         self.events_at_t[time]['event'].append(event_type)
         return
     #end function
+
+
+
+class SimLogger:
+    def __init__(self) -> None:
+        #logging lists
+        
+        self.user_log = UserInputs()
+        self.user_log.initialise()
+        #self.config = ''
+        #self.session_id = ''
+        self.meta = {}
+
+        self.robot_pos = None
+        self.faulty_id = None
+        self.mal_id = None
+        self.happiness = None
+        self.coverage = None
+
+    def initialise(self, session_id, config_name, seed, control_active):
+        
+        self.robot_pos = None
+        self.faulty_id = None
+        self.mal_id = None
+        self.happiness = None
+        self.coverage = None
+
+        self.user_log = UserInputs()
+        self.user_log.initialise()
+        #self.config = config_name
+        #self.session_id = session_id
+        self.meta = {   'config_name' : config_name, 
+                        'session_id' : session_id,
+                        'sim_seed' : seed,
+                        'start_time' : None, 
+                        'end_time' : None, 
+                        'control_active' : control_active
+                        }
+
+    def record_Step(self, agents, ):
+        print("record step")
+        # Save robot positions
+
+    def record_coverage(self, coverage):
+
+        # Save coverage data for whole trial
+        self.coverage = coverage
+
+    def save_agentId(self, ):
+        print("save agent")
+
+    def recordStartTime(self, time):
+        self.meta['start_time'] = time
+        return
+
+
+    def recordEndTime(self, time):
+        self.meta['end_time'] = time  
+        return     
+
+
+    def getList(self, type):
+        if type=='dog':
+            m_list = self.dog_logs
+        elif type=='sheep':
+            m_list = self.sheep_logs
+        return m_list
+
+
+
+
+    def logPopulationStates(self, type, population, time):
+        m_list = self.getList(type)
+
+        for agent in population.m_agents:
+            #if the agent is a dog then it will have an empowerment value else set the default to -1 (sheep don't calculate empowerment)
+            #TODO add empowerment to the sheep class (or agent class!) and set the default to -1 then all agents would have the agent.m_empowerment parameter but only dogs update it
+            if type =='dog':
+                empowerment_value = agent.m_empowerment
+            else:
+                empowerment_value = -1
+
+            m_list[agent.m_id].update(time, agent.m_position, empowerment_value)
+        return
+
+
+    def logPopulations(self, populations, time):
+        #size a numpy array to hold the agent ids and agent times
+        n_agents = 0
+        for pop in populations:
+            n_agents+=len(pop.m_agents)
+
+        #iniitalise the numpy arrays to hold the world state
+        ids_at_t = np.zeros(n_agents)
+        positions_at_t = np.zeros((n_agents,2))
+
+        #itterate through each agent in each population storing their id and position in the master lists
+        idx = 0
+        for pop in populations:
+            for agent in pop.m_agents:
+                ids_at_t[idx] = agent.m_id
+                positions_at_t[idx,:] = agent.m_position
+                idx+=1
+
+        #store the results
+        self.world_at_t[time] = {'ids' : ids_at_t, 'positions' : positions_at_t}
+        return
+
+
+    def pickleLog(self, file_name):
+        import pickle
+        data = {
+            'robot_pos' : self.robot_pos,
+            'faulty_id' : self.faulty_id,
+            'mal_id' : self.mal_id,
+            'happiness' : self.happiness,
+            'coverage' : self.coverage,
+            'user_log' : self.user_log,
+            'meta_data' : self.meta
+        }
+        fileo = open(f'{file_name}.pkl', 'wb')
+        pickle.dump(data, fileo)
+        fileo.close()
+        return
 
 

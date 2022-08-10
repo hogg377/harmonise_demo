@@ -108,7 +108,7 @@ sys.path.append(CONFIG_DIR)
 
 # --------------GLOBAL VARIABLES------------
 # These initial values shouldn't be changed unless you know what you're doing!!
-DEBUG_MODE_B = True
+DEBUG_MODE_B = False
 SCREEN_RESOLUTION = (1280, 720)
 menu_screen = pygame.display.set_mode((1280, 720))
 current_menu_id = 1
@@ -262,8 +262,8 @@ def run_simulation(exit_to_menu, config_file_name='', list_of_configs=[], show_e
 def start_menu_setup():
     # create the menu
     global current_menu_id
-    menu = pygame_menu.Menu('Welcome', 400, 500,
-                        theme=our_theme)
+    menu = pygame_menu.Menu('Welcome', 800, 500,
+                        theme=our_theme)                   
     menu.add.button('Start', set_menu_id, 20, border_width=2)  # this is the information section, just renamed the button as START for congruency with the QUIT button
     # menu.add.button('Instructions', set_menu_id, 20)
     # menu.add.button('Enter Details', set_menu_id, 40)
@@ -328,13 +328,13 @@ def instructions_menu_setup1():
         "\n- Malicious robots deliberately try to disrupt the team. "
 
         "\n\nBoth can tend to prevent a team from completing their task effectively. "
-        "\nYou will carry out two blocks of 12 trials. In the one block of trials, you can give \n"
-        "commands to the robots to help them carry out their task. In the other, you can only \nobserve the behaviour of the robots."
+        "\nYou will carry out two blocks of 12 trials. This will take approximately 20-30 minutes. \n"
+        "In one block of trials, you can give commands to the robots to help them carry out their task. \nIn the other, you can only observe the behaviour of the robots."
         
 
         "\n\nAt the end of each trial, you will be asked to answer a few short questions. "
 
-        "\nPlease answer these questions promptly and move on to the next trial quickly. "
+        "\nPlease answer these questions before moving on to the next trial. "
 
         "\nBefore the experiment starts, a tutorial will explain how the trials work.\n")
     
@@ -435,7 +435,7 @@ def tutorial_part2_setup():
             "In these trials, you can direct all the robots to travel, North, or East, or South, or West \n"
             "for a short period by pressing an arrow key on your keyboard."
 
-            "\n\nPress Ok to start the tutorial and use the arrow keys to help the robots \nto explore more effectively."
+            "\n\nUsing the arrow keys will help the robots to explore more effectively."
 
             "\nPress 'Ok' to Start Part 2. \n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
@@ -471,7 +471,7 @@ def tutorial_part3_setup():
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label(text, max_char=max_char, font_size=title_size)
     menu.add.button('OK', run_swarmsim, 35, TUTORIAL_SEQUENCE_A[2], font_size=button_size)
-    menu.add.button('Repeat Parts 1 and 2', set_menu_id, 31)
+    menu.add.button('Click here to repeat Parts 1 and 2', set_menu_id, 31)
     # menu.add.button('Start', run_tutorial)
     if DEBUG_MODE_B:
         menu.add.button('Skip', set_menu_id, 35)
@@ -518,7 +518,7 @@ def tutorial_complete_setup():
     # ------------- Button points to start the experimental blocks -----------------
     menu.add.button('Continue to the Experiment', run_experiment)
     # menu.add.button('Repeat Parts 3 and 4 of the Tutorial', set_menu_id, 33)
-    menu.add.button('Repeat the Tutorial', set_menu_id, 31)
+    menu.add.button('Click here to repeat the Tutorial', set_menu_id, 31)
     # menu.add.button('Repeat', set_menu_id, 30)
     return menu
 #end function
@@ -533,7 +533,7 @@ def experimental_block_1_setup():
     global menu_screen
     # show the third screen
     title = "Experiment Block (Passive)"
-    text = ("You will now be presented with a block of trials.\n\n"
+    text = ("You will now be presented with a block of trials. You do not need to press \nthe arrow keys, just observe.\n\n"
 
             "Your task is to observe the robot team and identify whether the team is operating properly, "
             "\nor if some of the robots are faulty, or if some of the robots are malicious. \n\n"
@@ -616,19 +616,21 @@ def details_setup():
     BORDER = 20
 
     title = "Final Questions"
-    text = ("Please answer the following final questions and then press Finish\n")
+    text = ("Please answer the following final questions and then press 'Finish'. Thanks!\n")
 
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label(text, max_char=max_char, font_size=title_size)
-
-    menu.add.text_input('Date of Birth (dd/mm/yyyy):  ', default='', textinput_id='birth', input_underline='_', input_underline_len=12)
-    menu.add.text_input('Sex:  ', default='', textinput_id='sex', input_underline='_', input_underline_len=15)
+    menu.add.text_input('Please enter your participant number here: ', default='', textinput_id='participantnumber', input_underline='_', input_underline_len=8) 
+    
+    menu.add.text_input('Age (in numbers):  ', default='', textinput_id='age', input_underline='_', input_underline_len=12)
+    menu.add.dropselect(title='Gender:', items=[('Female',0),('Male',1),('Non-Binary',2),('Prefer Not to Say',3)],dropselect_id = 'gender', font_size=title_size, selection_option_font_size=title_size-2)
     #menu.add.text_input('Is English your first language? (Y/N):  ', default='', textinput_id='english', input_underline='_', input_underline_len=0)
     menu.add.dropselect(title='Is English your first language?', items=[('Yes' ,0), ('No', 1)], dropselect_id = 'english', font_size=title_size, selection_option_font_size=title_size-2)
     #menu.add.text_input('Do you have normal / corrected-to-normal vision? (Y/N):  ', default='', textinput_id='vision', input_underline='_', input_underline_len=0))
     menu.add.dropselect(title='Do you have normal / corrected-to-normal vision?', items=[('Yes', 0), ('No', 1)], dropselect_id = 'vision', font_size=title_size, selection_option_font_size=title_size-2)
     #menu.add.text_input('Do you have colour blindness or a colour vision deficiency? (Y/N):   ', default='', textinput_id='colour')
     menu.add.dropselect(title='Do you have colour blindness or a colour vision deficiency?', items=[('Yes', 0), ('No', 1)], dropselect_id = 'colour', font_size=title_size, selection_option_font_size=title_size-2)
+    menu.add.text_input('How many hours per week do you play video games, on average?: ', default='', textinput_id='games', input_underline='_', input_underline_len=12)
     
     #menu.add.button('Finish', set_menu_id, 70, menu, True)
     menu.add.button('Finish',  set_menu_id, -1, menu, True)
@@ -698,7 +700,7 @@ def test_start_setup(list_of_configs, control_active, show_empowerment, use_task
     global test_number
     # show the third screen
     title = "Experiment Trial"
-    text = ("Press Go when you are ready to start the next trial.")
+    text = ("Press 'Go' when you are ready to start the next trial.")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
@@ -724,12 +726,11 @@ def post_test_questions_setup1():
     BORDER = 20
     import numpy as np
     SLIDER_VALUES = np.arange(0, 20.5, 0.5).tolist()
-    menu = pygame_menu.Menu('Well Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
-    menu.add.label('Please answer the following question promptly...\n', max_char=max_char, font_size=title_size)
-    menu.add.label('Use the slider to indicate how many seconds elapsed\nbetween your final mouse click and the end of the trial:\n', max_char=max_char, font_size=title_size)
+    menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
+    menu.add.label('Please answer the following question...\n', max_char=max_char, font_size=title_size)
+    menu.add.text_input('Type (in seconds) how long you think this trial \ntook from start to finish:\n', default='', textinput_id='time', input_underline='_', input_underline_len=5, max_char=max_char, font_size=title_size)
 
-    menu.add.range_slider('', default=10, range_values=SLIDER_VALUES, increment=0.5, rangeslider_id='time', width=500, range_line_height=10, 
-        range_text_value_color=(255, 0, 125), range_text_value_enabled=False, range_text_value_tick_number=3)
+
 
     menu.add.button('Done', set_menu_id, 92, menu, True)
     # menu.add.button('Main Menu', set_menu_id, 0)
@@ -741,18 +742,18 @@ def post_test_questions_setup2():
     global menu_screen
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree or Disagree', 4: '', 5: '', 5: '',7: 'Strongly Disagree'}
-    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Don't Know", 4: '', 5: '', 5: '',7: 'Malicious'}
-    menu = pygame_menu.Menu('Well Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
-    menu.add.label('Please answer the following two questions promptly...\n', max_char=max_char, font_size=title_size)
+    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree nor Disagree', 4: '', 5: '', 6: '',7: 'Strongly Disagree'}
+    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Don't Know/Operating Properly", 4: '', 5: '', 6: '',7: 'Malicious'}
+    menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
+    menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
     
-    menu.add.label('Use the slider to indicate the extent of which you agree with the following statement: \n"The team contained some robots that were not operating properly"', max_char=max_char, font_size=title_size, underline=False)
+    menu.add.label('Use the slider to indicate the extent to which you agree with the following statement: \n"The team contained some robots that were not operating properly"', max_char=max_char, font_size=title_size, underline=False)
     
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
     menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q1_VALUES[x])
     
-    menu.add.label('\nTo what extent do you believe that any robots in the team that \nwere not operating properly, were faulty or malicious?', max_char=max_char, font_size=title_size)
+    menu.add.label('\nIf you agree with the statement above, please indicate whether you felt the robots were \nfaulty or malicious. If you disagree with the statement, or if you are unsure, \nleave the slider in the centre', max_char=max_char, font_size=title_size)
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
     menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q2_VALUES[x])
@@ -1057,6 +1058,8 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
 
     # SimRecorder.record_Step(agents)
     
+    if (i == timesteps - 1):
+        plt.close()
  
     return (trails, malicious_trails, agent_pos, faulty_pos, )
 
@@ -1417,7 +1420,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     SimRecorder.initialise(session_id, config_file_name, seed, control_active)
 
-    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=25, blit=True, repeat = False,
+    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=2, blit=True, repeat = False,
                             fargs = (timesteps, control_active, agent_pos, max_length,
                                 trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
 
@@ -1443,6 +1446,8 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     
     # increment the number of tests completed
     test_number += 1
+
+    print("got here")
     return
 
 def on_press(event):
@@ -1586,6 +1591,7 @@ def main():
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
+                menu_log.save_responses(details_m,60)
                 saveAndQuit()
 
         # Select the right menu for the program state, update it (check if buttons have been pushed etc) and draw.
