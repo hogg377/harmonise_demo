@@ -136,18 +136,28 @@ class MenuLog:
         sheet = workbook.active
 
         print(sheet["C11"].value)
-        sheet["C12"] = 'hello'
+        print(user_details)
+        # sheet["C12"] = 'hello'
 
         # Write personal details
 
         # sheet["C3"] = user_details['name']
         sheet["C1"] = user_details[0]
-        sheet["C4"] = str(user_details[1]['birth'])
-        sheet["C5"] = user_details[1]['sex']
-        sheet["C6"] = user_details[1]['vision'][0][0]
-        sheet["C7"] = user_details[1]['colour'][0][0]
+        # sheet["C4"] = str(user_details[1]['birth'])
+        # sheet["C5"] = user_details[1]['sex']
+        # sheet["C6"] = user_details[1]['vision'][0][0]
+        # sheet["C7"] = user_details[1]['colour'][0][0]
 
-        row = 12
+        sheet["C3"] = user_details[1]['participantnumber']
+        sheet["C4"]= user_details[1]['english'][0][0]
+        sheet["C5"] = user_details[1]['vision'][0][0]
+        sheet["C6"] = user_details[1]['colour'][0][0]
+        #self.user_details['name60'] = data['name']
+        sheet["C7"] = user_details[1]['age']
+        sheet["C8"] = user_details[1]['gender'][0][0]
+        sheet["C9"] = user_details[1]['games']
+
+        row = 16
         col = 2
 
 
