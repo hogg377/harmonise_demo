@@ -108,7 +108,7 @@ sys.path.append(CONFIG_DIR)
 
 # --------------GLOBAL VARIABLES------------
 # These initial values shouldn't be changed unless you know what you're doing!!
-DEBUG_MODE_B = False
+DEBUG_MODE_B = True
 SCREEN_RESOLUTION = (1280, 720)
 menu_screen = pygame.display.set_mode((1280, 720))
 current_menu_id = 1
@@ -188,7 +188,6 @@ def set_menu_id(menu_id, menu=[], save_details_b=False):
     return
 #end function
 
-
 def run_simulation(exit_to_menu, config_file_name='', list_of_configs=[], show_empowerment=True, use_task_weighted_empowerment=False):
     """
     Run's a single trial of the empowerment simulation
@@ -263,8 +262,7 @@ def start_menu_setup():
     # create the menu
     global current_menu_id
     menu = pygame_menu.Menu('Welcome', 800, 500,
-                        theme=our_theme)
-    menu.add.text_input('Please enter your participant number here: ', default='', textinput_id='participantnumber', input_underline='_', input_underline_len=8)                    
+                        theme=our_theme)                   
     menu.add.button('Start', set_menu_id, 20, border_width=2)  # this is the information section, just renamed the button as START for congruency with the QUIT button
     # menu.add.button('Instructions', set_menu_id, 20)
     # menu.add.button('Enter Details', set_menu_id, 40)
@@ -621,7 +619,8 @@ def details_setup():
 
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label(text, max_char=max_char, font_size=title_size)
-
+    menu.add.text_input('Please enter your participant number here: ', default='', textinput_id='participantnumber', input_underline='_', input_underline_len=8) 
+    
     menu.add.text_input('Age (in numbers):  ', default='', textinput_id='age', input_underline='_', input_underline_len=12)
     menu.add.dropselect(title='Gender:', items=[('Female',0),('Male',1),('Non-Binary',2),('Prefer Not to Say',3)],dropselect_id = 'gender', font_size=title_size, selection_option_font_size=title_size-2)
     #menu.add.text_input('Is English your first language? (Y/N):  ', default='', textinput_id='english', input_underline='_', input_underline_len=0)
@@ -742,12 +741,12 @@ def post_test_questions_setup2():
     global menu_screen
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree or Disagree', 4: '', 5: '', 5: '',7: 'Strongly Disagree'}
-    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Don't Know/Operating Properly", 4: '', 5: '', 5: '',7: 'Malicious'}
+    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree nor Disagree', 4: '', 5: '',6: 'Strongly Disagree'}
+    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Don't Know/Operating Properly", 4: '', 5: '',6: 'Malicious'}
     menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
     
-    menu.add.label('Use the slider to indicate the extent of which you agree with the following statement: \n"The team contained some robots that were not operating properly"', max_char=max_char, font_size=title_size, underline=False)
+    menu.add.label('Use the slider to indicate the extent to which you agree with the following statement: \n"The team contained some robots that were not operating properly"', max_char=max_char, font_size=title_size, underline=False)
     
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
     menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=500, range_line_height=10, 
@@ -1420,7 +1419,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     SimRecorder.initialise(session_id, config_file_name, seed, control_active)
 
-    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=0, blit=True, repeat = False,
+    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=20, blit=True, repeat = False,
                             fargs = (timesteps, control_active, agent_pos, max_length,
                                 trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
 
@@ -1446,6 +1445,8 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     
     # increment the number of tests completed
     test_number += 1
+
+    print("got here")
     return
 
 def on_press(event):
@@ -1589,6 +1590,7 @@ def main():
         events = pygame.event.get()
         for event in events:
             if event.type == pygame.QUIT:
+                menu_log.save_responses(details_m,60)
                 saveAndQuit()
 
         # Select the right menu for the program state, update it (check if buttons have been pushed etc) and draw.

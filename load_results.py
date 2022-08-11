@@ -46,8 +46,6 @@ for i in range(len(question_responses[1])):
 
 	sheet.cell(row = row, column=col).value = question_responses[1][i]
 
-
-
 	# behaviour scores
 	sheet.cell(row = row, column=col + 1).value = question_responses[2][question_responses[1][i]]['behaviour_perception']
 
