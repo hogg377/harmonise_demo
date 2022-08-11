@@ -401,7 +401,7 @@ def tutorial_part1_setup():
     """ Generates a menu for the first part of the tutorial """
     global menu_screen
     title = "Tutorial Part 1: Robot Exploration"
-    text = ("In Part 1, you will see a team of 20 very simple robots exploring working together properly.\n\n"
+    text = ("In Part 1, you will see a team of 20 very simple properly-operating robots.\n\n"
 
             "Their joint task is to visit as much of the environment as possible during the fixed time available.\n"
             "Each robot attempts to move freely and avoid collisions."
@@ -432,7 +432,7 @@ def tutorial_part2_setup():
     text = ("\nIn some experiment trials, you will have some control over the robot team.\n\n"
             
             "In these trials, you can direct all the robots to travel, North, or East, or South, or West \n"
-            "for a short period by pressing an arrow key on your keyboard."
+            "for a short period by pressing the corresponding arrow key on your keyboard."
 
             "\n\nUsing the arrow keys will help the robots to explore more effectively."
 
@@ -463,7 +463,7 @@ def tutorial_part3_setup():
             "at the start of each trial."
             
             "\n\nWhen robots collide, they briefly become stuck before they can continue exploring."
-            "\nThe following simulation shows an example of this occurring in a team of \nproperly functioning robots."
+            "\nThe following simulation shows an example of this occurring in a team of \nproperly functioning robots. You do not need to press the arrow keys."
             "\n\nPress 'Ok' to start Part 3 (or you can choose to repeat Parts 1 and 2)\n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
