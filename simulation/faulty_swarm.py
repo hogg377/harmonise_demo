@@ -106,6 +106,15 @@ class swarm(object):
 		self.wallCollision_state = None
 		self.wallCollision_timeout = None
 
+		self.fault_active = None
+		# Default to always being on
+		self.fault_intermittance = 1.0
+		self.fault_rate = 100
+		self.fault_variance = 20
+		self.fault_timer = None
+		self.fault_limit = 0
+
+
 
 	def gen_agents(self):
 
@@ -158,6 +167,9 @@ class swarm(object):
 
 		self.wallCollision_state = np.zeros(self.size)
 		self.wallCollision_timeout = np.zeros(self.size)
+		self.fault_active = np.ones(self.size)
+		self.fault_timer = np.zeros(self.size)
+		self.fault_limit = np.zeros(self.size)
 
 	def gen_agents_uniform(self, env):
 
@@ -1139,15 +1151,43 @@ def directed_fields(swarm, faulty_swarm, param, noise):
 
 	# Compute euclidean distance between agents
 
+
+	# ------------ Determine intermittance of faults ------------------------------------
+
+
+
+
+
 	# ------------ Add some error on to agent to agent distance measurement -------------
 	mag = cdist(swarm.agents, swarm.agents)
+
 	for n in range(swarm.size):
 
 		if swarm.sensor_fault[n] == 1:
 
-			mag[n] = mag[n] + np.random.normal(swarm.sensor_mean, swarm.sensor_dev, (swarm.size))
-			# Values less than 0 set to zero
-			mag[n] = (mag[n] > 0)*mag[n]
+
+			if swarm.fault_active[n] == 1:
+				mag[n] = mag[n] + np.random.normal(swarm.sensor_mean, swarm.sensor_dev, (swarm.size))
+				# Values less than 0 set to zero
+				mag[n] = (mag[n] > 0)*mag[n]
+
+		
+			# With x prob, flip the active state of the fault.
+			if swarm.fault_timer[n] >= swarm.fault_limit[n]:
+				swarm.fault_active[n] = np.logical_not(swarm.fault_active[n])
+
+				# Reset time limit. Include 5% variance
+				if swarm.fault_active[n] == 1:
+					swarm.fault_limit[n] = int(swarm.fault_rate*np.random.normal(swarm.fault_intermittance, 0.05))
+				
+				if swarm.fault_active[n] == 0:
+					swarm.fault_limit[n] = int(swarm.fault_rate*np.random.normal(1 - swarm.fault_intermittance, 0.05))
+
+				swarm.fault_timer[n] = 0
+
+			swarm.fault_timer[n] += 1
+
+
 
 	# ----------- Agents with motor faults move slower ------------
 	slowAgents = np.where(swarm.motor_error == 1)[0]
@@ -1252,7 +1292,7 @@ def avoidance(swarm, map):
 
 	sensor_error = np.random.normal(1, 0.2, swarm.size)
 
-	sensor_error = swarm.sensor_fault*sensor_error
+	sensor_error = swarm.sensor_fault*swarm.fault_active*sensor_error
 
 	collision_dist = .8
 

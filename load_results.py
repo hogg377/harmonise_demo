@@ -14,9 +14,16 @@ with open(r"Results/"+entry+"/post_test_responses.pkl", "rb") as input_file:
 # 	sim_data = pickle.load(input_file)
 
 
-print(user_details)
-print('\n\n', question_responses)
-# print(sim_data['user_log'])
+for line in user_details:
+	print('\n' + str(line))
+
+print('Question response: \n\n')
+
+print('Trial order: ', question_responses[1])
+
+for line in question_responses[2]:
+	print('\n' + line + ': ' + str(question_responses[2][line]))
+
 
 
 directory = 'Results/' + entry
