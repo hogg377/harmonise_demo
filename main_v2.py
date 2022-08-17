@@ -70,7 +70,7 @@ from scipy.spatial.distance import cdist, pdist, euclidean
 
 # -----------------DIRECTORIES, PATHS AND CONFIGURATIONS-----------------------
 # Set the configuration and results directories folders
-CONFIG_DIR = "experiment_config_files/"
+CONFIG_DIR = "experiment_config_files/version2/"
 # RESULTS_DIR = os.path.join(os.path.expanduser('~'), "OneDrive - University of Bristol", "Empowerment Results")
 RESULTS_DIR = os.path.join('Results/')
 print('Result DIR: ', RESULTS_DIR)
@@ -87,12 +87,14 @@ LIVETEST_SEQUENCE_A = [
     'config_exp_4', 'config_exp_5', 'config_exp_6',
     'config_exp_7', 'config_exp_8', 'config_exp_9',
     'config_exp_10', 'config_exp_11', 'config_exp_12',
+    'config_exp_13', 'config_exp_14', 'config_exp_15'
 ]
 LIVETEST_SEQUENCE_B = [
     'config_exp_1', 'config_exp_2', 'config_exp_3',
     'config_exp_4', 'config_exp_5', 'config_exp_6',
     'config_exp_7', 'config_exp_8', 'config_exp_9',
     'config_exp_10', 'config_exp_11', 'config_exp_12',
+    'config_exp_13', 'config_exp_14', 'config_exp_15'
 ]
 TUTORIAL_SEQUENCE_A = ['config_fam_1', 'config_fam_2', 'config_fam_3', 'config_fam_4']
 
@@ -972,6 +974,7 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
     if i == timesteps - 1:
         plt.close()
 
+
     swarmy.time = i
 
     # ---------------------------- Spawn agents from edge of environment over time -------------------------------------
@@ -995,6 +998,7 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
             swarmy.behaviour[pick-malicious_swarm.size] = 4
     if i <= 150:
         swarmy.behaviour = 4*np.ones(swarmy.size)
+        swarmy.param = 10
     else:
         swarmy.param = 60
 
@@ -1181,7 +1185,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     # Channels of communication between certain robots is completely lost
     num_robotblind = 0
     # Motor error causing agents to move half speed with a degree of fluctuation
-    num_motorslow = 0
+    num_motorslow = cfg["faulty_motor"]
     # agents have a persistent heading error 
     num_headingerror = 0
 
@@ -1272,6 +1276,21 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     time_data = []
     happy_data = []
 
+    # ===================== Setting fault intermittance ======================
+
+    swarmy.fault_rate = 100
+    '''
+       Fault intermittance sets the proportion of time that
+       the fault is active. i.e 0 means the fault is never active 
+       and 1 would mean the fault is always active.
+
+       The fault rate defines the period over which the fault can
+       switch between active and inactive.
+    '''
+    swarmy.fault_intermittance = 0.5
+    swarmy.fault_limit = np.random.randint(0, swarmy.fault_rate, swarmy.size)
+
+
 
     # Set the length of agent trails in simulation
     max_length = 10*swarmy.size
@@ -1337,7 +1356,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     malicious_swarm.motor_error = np.zeros(malicious_swarm.size)
     malicious_swarm.motor_speeds = np.ones(malicious_swarm.size)
     swarmy.motor_mean = 0.5
-    swarmy.motor_dev = 0.2
+    swarmy.motor_dev = 0.3
     for n in range(0, num_motorslow):
 
         
@@ -1398,7 +1417,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     if control_active == True:
         fig.canvas.mpl_connect('key_press_event', on_press)
-    swarmy.param = 10
+    
 
     agents_withFaults = np.logical_or(swarmy.malicious_broadcasters, swarmy.heading_error)
 
@@ -1445,8 +1464,6 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     
     # increment the number of tests completed
     test_number += 1
-
-    print("got here")
     return
 
 def on_press(event):

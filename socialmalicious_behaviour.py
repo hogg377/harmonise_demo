@@ -166,11 +166,11 @@ totSwarm_size = 20
 # Swarm faults
 
 # positive sensor error added to distance measurement between agents
-num_sensorfault = 5
+num_sensorfault = 0
 # Channels of communication between certain robots is completely lost
 num_robotblind = 0
 # Motor error causing agents to move half speed with a degree of fluctuation
-num_motorslow = 0
+num_motorslow = 5
 # agents have a persistent heading error 
 num_headingerror = 0
 
@@ -306,7 +306,7 @@ swarmy.fault_rate = 100
    The fault rate defines the period over which the fault can
    switch between active and inactive.
 '''
-swarmy.fault_intermittance = 0.4
+swarmy.fault_intermittance = 0.5
 swarmy.fault_limit = np.random.randint(0, swarmy.fault_rate, swarmy.size)
 
 
@@ -378,7 +378,7 @@ swarmy.motor_speeds = np.ones(swarmy.size)
 malicious_swarm.motor_error = np.zeros(malicious_swarm.size)
 malicious_swarm.motor_speeds = np.ones(malicious_swarm.size)
 swarmy.motor_mean = 0.5
-swarmy.motor_dev = 0.2
+swarmy.motor_dev = 0.3
 for n in range(0, num_motorslow):
 
 	print(agent_set)

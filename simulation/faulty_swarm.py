@@ -1161,31 +1161,32 @@ def directed_fields(swarm, faulty_swarm, param, noise):
 	# ------------ Add some error on to agent to agent distance measurement -------------
 	mag = cdist(swarm.agents, swarm.agents)
 
-	for n in range(swarm.size):
 
-		if swarm.sensor_fault[n] == 1:
+	faulty_agents = np.where(swarm.sensor_fault == 1)[0]
 
-
-			if swarm.fault_active[n] == 1:
-				mag[n] = mag[n] + np.random.normal(swarm.sensor_mean, swarm.sensor_dev, (swarm.size))
-				# Values less than 0 set to zero
-				mag[n] = (mag[n] > 0)*mag[n]
+	for agent in faulty_agents:
 
 		
-			# With x prob, flip the active state of the fault.
-			if swarm.fault_timer[n] >= swarm.fault_limit[n]:
-				swarm.fault_active[n] = np.logical_not(swarm.fault_active[n])
+		if swarm.fault_active[agent] == 1:
+			mag[agent] = mag[agent] + np.random.normal(swarm.sensor_mean, swarm.sensor_dev, (swarm.size))
+			# Values less than 0 set to zero
+			mag[agent] = (mag[agent] > 0)*mag[agent]
 
-				# Reset time limit. Include 5% variance
-				if swarm.fault_active[n] == 1:
-					swarm.fault_limit[n] = int(swarm.fault_rate*np.random.normal(swarm.fault_intermittance, 0.05))
-				
-				if swarm.fault_active[n] == 0:
-					swarm.fault_limit[n] = int(swarm.fault_rate*np.random.normal(1 - swarm.fault_intermittance, 0.05))
+	
+		# With x prob, flip the active state of the fault.
+		if swarm.fault_timer[agent] >= swarm.fault_limit[agent]:
+			swarm.fault_active[agent] = np.logical_not(swarm.fault_active[agent])
 
-				swarm.fault_timer[n] = 0
+			# Reset time limit. Include 5% variance
+			if swarm.fault_active[agent] == 1:
+				swarm.fault_limit[agent] = int(swarm.fault_rate*np.random.normal(swarm.fault_intermittance, 0.05))
+			
+			if swarm.fault_active[agent] == 0:
+				swarm.fault_limit[agent] = int(swarm.fault_rate*np.random.normal(1 - swarm.fault_intermittance, 0.05))
 
-			swarm.fault_timer[n] += 1
+			swarm.fault_timer[agent] = 0
+
+		swarm.fault_timer[agent] += 1
 
 
 
