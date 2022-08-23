@@ -744,7 +744,7 @@ def post_test_questions_setup2():
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree nor Disagree', 4: '', 5: '',6: 'Strongly Disagree'}
-    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Don't Know/Operating Properly", 4: '', 5: '',6: 'Malicious'}
+    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Operating Properly", 4: '', 5: '',6: 'Malicious'}
     menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
     
