@@ -2,7 +2,7 @@ import pickle
 import xlsxwriter
 import openpyxl
 
-entry = '20220818T165554'
+entry = 'emer'
 
 with open(r"Results/"+entry+"/user_details.pkl", "rb") as input_file:
 	user_details = pickle.load(input_file)

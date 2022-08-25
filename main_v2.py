@@ -111,7 +111,7 @@ sys.path.append(CONFIG_DIR)
 # --------------GLOBAL VARIABLES------------
 # These initial values shouldn't be changed unless you know what you're doing!!
 DEBUG_MODE_B = True
-SCREEN_RESOLUTION = (1280, 720)
+SCREEN_RESOLUTION = (1800, 1000)
 menu_screen = pygame.display.set_mode((1280, 720))
 current_menu_id = 1
 session_id = '000000T000000'
@@ -743,20 +743,20 @@ def post_test_questions_setup2():
     global menu_screen
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree nor Disagree', 4: '', 5: '',6: 'Strongly Disagree'}
-    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Operating Properly", 4: '', 5: '',6: 'Malicious'}
+    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: '', 4: 'Neither Agree nor Disagree', 5: '', 6: '', 7: '', 8: 'Strongly Disagree'}
+    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: '', 4: "Operating Properly", 4: '', 5: '', 6: '', 7: '', 8: 'Malicious'}
     menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
     
     menu.add.label('Use the slider to indicate the extent to which you agree with the following statement: \n"The team contained some robots that were not operating properly"', max_char=max_char, font_size=title_size, underline=False)
     
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
-    menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=500, range_line_height=10, 
+    menu.add.range_slider('', default=4, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q1_VALUES[x])
     
     menu.add.label('\nIf you agree with the statement above, please indicate whether you felt the robots were \nfaulty or malicious. If you disagree with the statement, or if you are unsure, \nleave the slider in the centre', max_char=max_char, font_size=title_size)
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
-    menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=500, range_line_height=10, 
+    menu.add.range_slider('', default=4, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q2_VALUES[x])
     menu.add.button('Done', set_menu_id, 90, menu, True)
     # menu.add.button('Main Menu', set_menu_id, 0)
@@ -1147,7 +1147,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
 
     seed = random.randrange((2**32) - 1)
-    seed = 99999
+    # seed = 99999
 
     random.seed(seed)
     np.random.seed(seed)
