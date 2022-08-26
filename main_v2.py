@@ -741,7 +741,7 @@ def post_test_questions_setup2():
     global menu_screen
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree nor Disagree', 4: '', 5: '',6: 'Strongly Disagree'}
+    Q1_VALUES = {0: 'Strongly Disagree', 1: '', 2: '', 3: 'Neither Agree nor Disagree', 4: '', 5: '',6: 'Strongly Agree'}
     Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Don't Know/Operating Properly", 4: '', 5: '',6: 'Malicious'}
     menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
@@ -1419,7 +1419,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     SimRecorder.initialise(session_id, config_file_name, seed, control_active)
 
-    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=20, blit=True, repeat = False,
+    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=3, blit=True, repeat = False,
                             fargs = (timesteps, control_active, agent_pos, max_length,
                                 trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
 
