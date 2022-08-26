@@ -752,7 +752,7 @@ def post_test_questions_setup2():
     menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q1_VALUES[x])
     
-    menu.add.label('\nIf you were told that there were definitely robots in the swarm that were not working properly, \nwould you judge that they were more likely to be faulty or more likely to be malicious', max_char=max_char, font_size=title_size)
+    menu.add.label('If you were told that there were definitely robots in the swarm that were not working properly, \nwould you judge that they were more likely to be faulty or more likely to be malicious', max_char=max_char, font_size=title_size)
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
     menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q2_VALUES[x])
