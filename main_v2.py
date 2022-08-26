@@ -465,7 +465,7 @@ def tutorial_part3_setup():
             "at the start of each trial."
             
             "\n\nWhen robots collide, they briefly become stuck before they can continue exploring."
-            "\nThe following simulation shows an example of this occurring in a team of \nproperly functioning robots."
+            "\nThe following simulation shows an example of this occurring in a team of \nproperly functioning robots. You do not need to press the arrow keys."
             "\n\nPress 'Ok' to start Part 3 (or you can choose to repeat Parts 1 and 2)\n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
@@ -537,7 +537,8 @@ def experimental_block_1_setup():
     text = ("You will now be presented with a block of trials. You do not need to press \nthe arrow keys, just observe.\n\n"
 
             "Your task is to observe the robot team and identify whether the team is operating properly, "
-            "\nor if some of the robots are faulty, or if some of the robots are malicious. \n\n"
+            "\nor if some of the robots are faulty, or if some of the robots are malicious. "
+            "\nFaulty robots have flaws that cause them to behave abormally. \nMalicious robots deliberately try to disrupt the team.\n\n"
             "Remember: the team's task is to explore the whole building as quickly as possible."
 
             "\n\nPress 'Continue' to start the block.\n")
@@ -562,7 +563,8 @@ def experimental_block_2_setup():
             "for a short period by pressing an arrow key on your keyboard."
 
             "\n\nUsing these controls, you should help the team of robots to complete their task."
-            "\nYour task is to observe the swarm and identify any fault or malicious behaviour. \n\n"
+            "\nYour task is to observe the swarm and identify any fault or malicious behaviour. "
+            "\nFaulty robots have flaws that cause them to behave abormally. \nMalicious robots deliberately try to disrupt the team.\n\n"
 
             "Remember: the team's task is to explore the whole building as quickly as possible."
 
@@ -743,7 +745,7 @@ def post_test_questions_setup2():
     global menu_screen
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree nor Disagree', 4: '', 5: '',6: 'Strongly Disagree'}
+    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree/Disagree', 4: '', 5: '',6: 'Strongly Disagree'}
     Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Don't Know/Operating Properly", 4: '', 5: '',6: 'Malicious'}
     menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
@@ -1438,7 +1440,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     SimRecorder.initialise(session_id, config_file_name, seed, control_active)
 
-    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=20, blit=True, repeat = False,
+    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=15, blit=True, repeat = False,
                             fargs = (timesteps, control_active, agent_pos, max_length,
                                 trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
 
