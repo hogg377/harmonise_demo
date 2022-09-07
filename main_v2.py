@@ -361,17 +361,20 @@ def instructions_menu_setup2():
     global menu_screen
     title1 = ("Robot Team Task\n")
 
-    text1 = ("A dangerous chemical accident has occurred in a small factory."
+    text1 = ("A dangerous chemical accident has occurred in a small factory.\n\n"
 
-            "\n\nA team of simple robots enters the factory to explore the entire space as quickly\n" 
-            "as possible to check for people that have not been evacuated. "
+            "A team of simple robots enters the factory to explore the entire space as quickly\n" 
+            "as possible to check for people that have not been evacuated.\n\n"
 
-            "\n\nThe robots do not have a map and are not particularly sophisticated searchers – they explore at random.  "
+            "The robots do not have a map and are not particularly sophisticated searchers – they explore at random.\n\n"
 
-            "\n\nHowever, they can communicate with nearby team members to help avoid getting stuck in corners, etc. \n"
-            "Robots let nearby team members know if their current direction of travel is successful or not. \n"
-            "This allows robots that are blocked by a wall to copy the direction of travel \n"
-            "of nearby team members that are moving successfully.\n ")
+            "However, they can communicate with nearby team members to help avoid getting stuck in corners, etc. \n\n"
+
+            "Robots let nearby team members know if their current direction of travel is successful or not.\n\n"
+
+            "This allows a robot that is stuck to copy the direction of travel \n"
+            "of a nearby team member that is moving in a good direction.\n ")
+    
     
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
@@ -380,6 +383,7 @@ def instructions_menu_setup2():
     menu.add.label(text1, max_char=max_char, font_size=text_size)  # , align=pygame_menu.locals.ALIGN_LEFT)
     # menu.add.button('Ok', set_menu_id, 30,font_size=20)
     menu.add.button('Ok', run_tutorial, font_size=button_size)
+    menu.add.label("\n", max_char=max_char, font_size=text_size)  # , align=pygame_menu.locals.ALIGN_LEFT)
 
     ##### !!!!!!!!!!!!! Point to run experiment, skipping tutorial
     # menu.add.button('Ok', run_experiment, font_size=button_size)
