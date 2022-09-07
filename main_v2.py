@@ -375,7 +375,9 @@ def instructions_menu_setup2():
             "This allows a robot that is stuck to copy the direction of travel \n"
             "of a nearby team member that is moving in a good direction.\n ")
     
-    
+    # changes
+
+
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu('Experiment Instructions', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
