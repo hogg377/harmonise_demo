@@ -770,7 +770,7 @@ def post_test_questions_setup2():
     menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q2_VALUES[x])
     menu.add.label("\n", max_char=max_char, font_size=3)
-    menu.add.button('When You Have Answered Both Questions, Please Click Here To Continue', set_menu_id, 90, menu, True)
+    menu.add.button('When You Have Answered Both Questions\nPlease Click Here To Continue', set_menu_id, 90, menu, True)
     # menu.add.button('Main Menu', set_menu_id, 0)
     menu.add.label("\n", max_char=max_char, font_size=3)
 
