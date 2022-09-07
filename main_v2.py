@@ -316,34 +316,41 @@ def information_sheet1_setup():
 
 def instructions_menu_setup1():
     global menu_screen
-    title1 = ("Please read the instructions carefully\n")
+    title1 = ("\nPlease read the following instructions carefully\n")
 
-    text1 = ("In this experiment, you will observe and interact with a team of virtual robots.\n\n" 
+    text1 = ("In this experiment, you will observe and interact with a team of virtual robots.\n\n"+
 
-        "Your task is to identify whether this team is operating properly or if it contains ‘faulty’ robots or ‘malicious’ robots."
+        "Your task is to identify whether this team is operating properly,\nor if it contains 'faulty' robots or 'malicious' robots.\n"+
 
-        "\n- Faulty robots have flaws that cause them to behave abnormally. "
+        #"\n- Faulty robots have flaws that cause them to behave abnormally. "
 
-        "\n- Malicious robots deliberately try to disrupt the team. "
+        #"\n- Malicious robots deliberately try to disrupt the team. "
 
-        "\n\nBoth can tend to prevent a team from completing their task effectively. "
-        "\nYou will carry out two blocks of 12 trials. This will take approximately 20-30 minutes. \n"
-        "In one block of trials, you can give commands to the robots to help them carry out their task. \nIn the other, you can only observe the behaviour of the robots."
+        "\n- When all robots are 'working properly'...\n'all robots are functioning properly\nand trying to complete the task\nto the best of their ability'\n"+
+        "\n- In a swarm containing 'faulty' robots...\n'at least some robots are broken\nand can’t consistently function properly'\n"+
+        "\n- In a swarm containing 'malicious' robots...\n'at least some robots are deliberately trying\nto prevent the swarm from being successful'"+
+
+
+        "\n\nBoth faulty and malicious robots can tend to prevent a team from completing their task effectively."+
+        "\n\nYou will carry out two blocks of 12 trials. This will take approximately 20-30 minutes."+
+        "\n\nIn one block of trials, you can give commands to the robots to help them carry out their task."+
+        "\nIn the other, you can only observe the behaviour of the robots."+
         
 
-        "\n\nAt the end of each trial, you will be asked to answer a few short questions. "
+        "\n\nAt the end of each trial, you will be asked to answer a few short questions. "+
 
-        "\nPlease answer these questions before moving on to the next trial. "
+        "\nPlease answer these questions before moving on to the next trial. "+
 
         "\nBefore the experiment starts, a tutorial will explain how the trials work.\n")
     
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu('Experiment Instructions', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
-    menu.add.label(title1, max_char=max_char, font_size=title_size, align=pygame_menu.locals.ALIGN_LEFT)
+    menu.add.label(title1, max_char=max_char, font_size=title_size)#, align=pygame_menu.locals.ALIGN_LEFT)
     menu.add.label(text1, max_char=max_char, font_size=text_size)  # , align=pygame_menu.locals.ALIGN_LEFT)
     # menu.add.button('Ok', set_menu_id, 30,font_size=20)
     menu.add.button('Ok', set_menu_id, 21, font_size=button_size)
+    menu.add.label("\n", max_char=max_char, font_size=text_size)
 
     ##### !!!!!!!!!!!!! Point to run experiment, skipping tutorial
     # menu.add.button('Ok', run_experiment, font_size=button_size)
@@ -369,7 +376,7 @@ def instructions_menu_setup2():
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu('Experiment Instructions', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
-    menu.add.label(title1, max_char=max_char, font_size=title_size, align=pygame_menu.locals.ALIGN_LEFT)
+    menu.add.label(title1, max_char=max_char, font_size=title_size)#, align=pygame_menu.locals.ALIGN_LEFT)
     menu.add.label(text1, max_char=max_char, font_size=text_size)  # , align=pygame_menu.locals.ALIGN_LEFT)
     # menu.add.button('Ok', set_menu_id, 30,font_size=20)
     menu.add.button('Ok', run_tutorial, font_size=button_size)
@@ -401,9 +408,9 @@ def tutorial_part1_setup():
     """ Generates a menu for the first part of the tutorial """
     global menu_screen
     title = "Tutorial Part 1: Robot Exploration"
-    text = ("In Part 1, you will see a team of 20 very simple robots exploring working together properly.\n\n"
+    text = ("In Part 1, you will see a team of 20 very simple robots working together properly.\n\n"
 
-            "Their joint task is to visit as much of the environment as possible during the fixed time available.\n"
+            "Their joint task is to visit as much of the environment\nas possible during the fixed time available.\n"
             "Each robot attempts to move freely and avoid collisions."
             
             "\n\nWhilst some robots will often retrace the same areas and may occasionally get stuck or "
@@ -534,8 +541,8 @@ def experimental_block_1_setup():
     title = "Experiment Block (Passive)"
     text = ("You will now be presented with a block of trials. You do not need to press \nthe arrow keys, just observe.\n\n"
 
-            "Your task is to observe the robot team and identify whether the team is operating properly, "
-            "\nor if some of the robots are faulty, or if some of the robots are malicious. \n\n"
+            "Your task is to observe the robot team and identify whether the team is operating properly,\n"
+            "or if some of the robots are faulty, or if some of the robots are malicious. \n\n"
             "Remember: the team's task is to explore the whole building as quickly as possible."
 
             "\n\nPress 'Continue' to start the block.\n")
@@ -741,23 +748,32 @@ def post_test_questions_setup2():
     global menu_screen
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    Q1_VALUES = {0: 'Strongly Disagree', 1: '', 2: '', 3: 'Neither Agree nor Disagree', 4: '', 5: '',6: 'Strongly Agree'}
-    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Don't Know/Operating Properly", 4: '', 5: '',6: 'Malicious'}
+    Q1_VALUES = {0: 'A is more likely', 1: '', 2: '', 3: 'A and B are equally likely', 4: '', 5: '',6: 'B is more likely'}
+    Q2_VALUES = {0: 'C is more likely', 1: '', 2: '', 3: "C and D are equally likely", 4: '', 5: '',6: 'D is more likely'}
     menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
-    menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
+    #menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
     
-    menu.add.label('Use the slider to indicate the extent to which you agree with the following statement: \n"The team contained some robots that were not operating properly"', max_char=max_char, font_size=title_size, underline=False)
+    menu.add.label('Based on your experience in the last trial, is it more likely that\nA) All the robots were working properly, or that\nB) Some robots were not working properly', max_char=max_char, font_size=title_size, underline=False)
     
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
     menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q1_VALUES[x])
     
-    menu.add.label('\nIf you agree with the statement above, please indicate whether you felt the robots were \nfaulty or malicious. If you disagree with the statement, or if you are unsure, \nleave the slider in the centre', max_char=max_char, font_size=title_size)
+    menu.add.label('\nIf, in fact, the robots were NOT all working properly, is it more likely that\nC) Some of the robots were FAULTY, or\nD) Some of the robots were MALICIOUS', max_char=max_char, font_size=title_size)
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
     menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q2_VALUES[x])
-    menu.add.button('Done', set_menu_id, 90, menu, True)
+    menu.add.label("\n", max_char=max_char, font_size=3)
+    menu.add.button('When You Have Answered Both Questions, Please Click Here To Continue', set_menu_id, 90, menu, True)
     # menu.add.button('Main Menu', set_menu_id, 0)
+    menu.add.label("\n", max_char=max_char, font_size=3)
+
+    menu.add.label("RECALL THAT:\n"+
+                   "- When all robots are 'working properly'...\n'all robots are functioning properly\nand trying to complete the task\nto the best of their ability'\n\n"+
+                   "- In a swarm containing 'faulty' robots...\n'at least some robots are broken\nand can’t consistently function properly'\n\n"+
+                   "- In a swarm containing 'malicious' robots...\n'at least some robots are deliberately trying\nto prevent the swarm from being successful'",
+                   max_char=max_char, font_size=title_size)
+
     return menu
 #end function
 
