@@ -70,7 +70,7 @@ from scipy.spatial.distance import cdist, pdist, euclidean
 
 # -----------------DIRECTORIES, PATHS AND CONFIGURATIONS-----------------------
 # Set the configuration and results directories folders
-CONFIG_DIR = "experiment_config_files/"
+CONFIG_DIR = "experiment_config_files/version2/"
 # RESULTS_DIR = os.path.join(os.path.expanduser('~'), "OneDrive - University of Bristol", "Empowerment Results")
 RESULTS_DIR = os.path.join('Results/')
 print('Result DIR: ', RESULTS_DIR)
@@ -87,12 +87,14 @@ LIVETEST_SEQUENCE_A = [
     'config_exp_4', 'config_exp_5', 'config_exp_6',
     'config_exp_7', 'config_exp_8', 'config_exp_9',
     'config_exp_10', 'config_exp_11', 'config_exp_12',
+    'config_exp_13', 'config_exp_14', 'config_exp_15'
 ]
 LIVETEST_SEQUENCE_B = [
     'config_exp_1', 'config_exp_2', 'config_exp_3',
     'config_exp_4', 'config_exp_5', 'config_exp_6',
     'config_exp_7', 'config_exp_8', 'config_exp_9',
     'config_exp_10', 'config_exp_11', 'config_exp_12',
+    'config_exp_13', 'config_exp_14', 'config_exp_15'
 ]
 TUTORIAL_SEQUENCE_A = ['config_fam_1', 'config_fam_2', 'config_fam_3', 'config_fam_4']
 
@@ -476,7 +478,7 @@ def tutorial_part3_setup():
             "at the start of each trial."
             
             "\n\nWhen robots collide, they briefly become stuck before they can continue exploring."
-            "\nThe following simulation shows an example of this occurring in a team of \nproperly functioning robots."
+            "\nThe following simulation shows an example of this occurring in a team of \nproperly functioning robots. You do not need to press the arrow keys."
             "\n\nPress 'Ok' to start Part 3 (or you can choose to repeat Parts 1 and 2)\n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
@@ -547,8 +549,10 @@ def experimental_block_1_setup():
     title = "Experiment Block (Passive)"
     text = ("You will now be presented with a block of trials. You do not need to press \nthe arrow keys, just observe.\n\n"
 
-            "Your task is to observe the robot team and identify whether the team is operating properly,\n"
-            "or if some of the robots are faulty, or if some of the robots are malicious. \n\n"
+            "Your task is to observe the robot team and identify whether the team is operating properly, "
+            "\nor if some of the robots are faulty, or if some of the robots are malicious. "
+            "\nFaulty robots have flaws that cause them to behave abormally. \nMalicious robots deliberately try to disrupt the team.\n\n"
+
             "Remember: the team's task is to explore the whole building as quickly as possible."
 
             "\n\nPress 'Continue' to start the block.\n")
@@ -573,7 +577,8 @@ def experimental_block_2_setup():
             "for a short period by pressing an arrow key on your keyboard."
 
             "\n\nUsing these controls, you should help the team of robots to complete their task."
-            "\nYour task is to observe the swarm and identify any fault or malicious behaviour. \n\n"
+            "\nYour task is to observe the swarm and identify any fault or malicious behaviour. "
+            "\nFaulty robots have flaws that cause them to behave abormally. \nMalicious robots deliberately try to disrupt the team.\n\n"
 
             "Remember: the team's task is to explore the whole building as quickly as possible."
 
@@ -754,20 +759,22 @@ def post_test_questions_setup2():
     global menu_screen
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
+
     Q1_VALUES = {0: 'A is more likely', 1: '', 2: '', 3: 'A and B are equally likely', 4: '', 5: '',6: 'B is more likely'}
     Q2_VALUES = {0: 'C is more likely', 1: '', 2: '', 3: "C and D are equally likely", 4: '', 5: '',6: 'D is more likely'}
+
     menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     #menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
     
     menu.add.label('Based on your experience in the last trial, is it more likely that\nA) All the robots were working properly, or that\nB) Some robots were not working properly', max_char=max_char, font_size=title_size, underline=False)
     
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
-    menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=500, range_line_height=10, 
+    menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=800, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q1_VALUES[x])
     
     menu.add.label('\nIf, in fact, the robots were NOT all working properly, is it more likely that\nC) Some of the robots were FAULTY, or\nD) Some of the robots were MALICIOUS', max_char=max_char, font_size=title_size)
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
-    menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=500, range_line_height=10, 
+    menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=800, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q2_VALUES[x])
     menu.add.label("\n", max_char=max_char, font_size=3)
     menu.add.button('When You Have Answered Both Questions\nPlease Click Here To Continue', set_menu_id, 90, menu, True)
@@ -994,6 +1001,7 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
     if i == timesteps - 1:
         plt.close()
 
+
     swarmy.time = i
 
     # ---------------------------- Spawn agents from edge of environment over time -------------------------------------
@@ -1017,6 +1025,7 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
             swarmy.behaviour[pick-malicious_swarm.size] = 4
     if i <= 150:
         swarmy.behaviour = 4*np.ones(swarmy.size)
+        swarmy.param = 10
     else:
         swarmy.param = 60
 
@@ -1077,7 +1086,7 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
 
     # Pass in positions of healthy swarm and malicious agents (blockers)
 
-    # SimRecorder.record_Step(agents)
+    SimRecorder.record_Step(agents)
     
     if (i == timesteps - 1):
         plt.close()
@@ -1109,7 +1118,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     if "_fam_2" in config_file_name:
          control_active = True
-
+    
 
     # create a name for the config which includes information on the dynamic parameters
     #   i.e. those which are set at runtime rather than written in the config file
@@ -1163,9 +1172,15 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     fsize = 12
 
-
-    seed = random.randrange((2**32) - 1)
-    seed = 99999
+    if "_fam_3" in config_file_name:
+        # fixed seed for tutorial 3 where collisions are shown
+        seed = 2665807705
+    elif "_fam_1" in config_file_name or "_fam_2" in config_file_name:
+        # fixed seed for normal behaviour in tut 1 and 2
+        seed = 1923979586
+    else:
+        seed = random.randrange((2**32) - 1)
+    # seed = 99999
 
     random.seed(seed)
     np.random.seed(seed)
@@ -1203,7 +1218,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     # Channels of communication between certain robots is completely lost
     num_robotblind = 0
     # Motor error causing agents to move half speed with a degree of fluctuation
-    num_motorslow = 0
+    num_motorslow = cfg["faulty_motor"]
     # agents have a persistent heading error 
     num_headingerror = 0
 
@@ -1294,6 +1309,21 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     time_data = []
     happy_data = []
 
+    # ===================== Setting fault intermittance ======================
+
+    swarmy.fault_rate = 100
+    '''
+       Fault intermittance sets the proportion of time that
+       the fault is active. i.e 0 means the fault is never active 
+       and 1 would mean the fault is always active.
+
+       The fault rate defines the period over which the fault can
+       switch between active and inactive.
+    '''
+    swarmy.fault_intermittance = 0.5
+    swarmy.fault_limit = np.random.randint(0, swarmy.fault_rate, swarmy.size)
+
+
 
     # Set the length of agent trails in simulation
     max_length = 10*swarmy.size
@@ -1359,7 +1389,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     malicious_swarm.motor_error = np.zeros(malicious_swarm.size)
     malicious_swarm.motor_speeds = np.ones(malicious_swarm.size)
     swarmy.motor_mean = 0.5
-    swarmy.motor_dev = 0.2
+    swarmy.motor_dev = 0.3
     for n in range(0, num_motorslow):
 
         
@@ -1420,7 +1450,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     if control_active == True:
         fig.canvas.mpl_connect('key_press_event', on_press)
-    swarmy.param = 10
+    
 
     agents_withFaults = np.logical_or(swarmy.malicious_broadcasters, swarmy.heading_error)
 
@@ -1441,7 +1471,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     SimRecorder.initialise(session_id, config_file_name, seed, control_active)
 
-    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=3, blit=True, repeat = False,
+    anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=15, blit=True, repeat = False,
                             fargs = (timesteps, control_active, agent_pos, max_length,
                                 trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
 
@@ -1467,8 +1497,6 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     
     # increment the number of tests completed
     test_number += 1
-
-    print("got here")
     return
 
 def on_press(event):

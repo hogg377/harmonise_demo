@@ -743,18 +743,18 @@ def post_test_questions_setup2():
     global menu_screen
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    Q1_VALUES = {0: 'Strongly Agree', 1: '', 2: '', 3: 'Neither Agree nor Disagree', 4: '', 5: '',6: 'Strongly Disagree'}
-    Q2_VALUES = {0: 'Faulty', 1: '', 2: '', 3: "Don't Know/Operating Properly", 4: '', 5: '',6: 'Malicious'}
+    Q1_VALUES = {0: 'All robots were working properly', 1: '', 2: '', 3: 'Equally Likely', 4: '', 5: '',6: 'Some were not working properly'}
+    Q2_VALUES = {0: 'More likely to be faulty', 1: '', 2: '', 3: "Equally likely", 4: '', 5: '',6: 'More likely to be malicious'}
     menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
     
-    menu.add.label('Use the slider to indicate the extent to which you agree with the following statement: \n"The team contained some robots that were not operating properly"', max_char=max_char, font_size=title_size, underline=False)
+    menu.add.label('Based on your experience in the last trial, is it more likely that all \nof the robots in the swarm were operating properly, or that some robots \nwere NOT working properly', max_char=max_char, font_size=title_size, underline=False)
     
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
     menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q1_VALUES[x])
     
-    menu.add.label('\nIf you agree with the statement above, please indicate whether you felt the robots were \nfaulty or malicious. If you disagree with the statement, or if you are unsure, \nleave the slider in the centre', max_char=max_char, font_size=title_size)
+    menu.add.label('If you were told that there were definitely robots in the swarm that were not working properly, \nwould you judge that they were more likely to be faulty or more likely to be malicious', max_char=max_char, font_size=title_size)
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
     menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=500, range_line_height=10, 
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q2_VALUES[x])

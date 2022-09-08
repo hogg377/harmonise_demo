@@ -1,5 +1,5 @@
 # import pickle from turtle 
-from turtle import end_fill
+#from turtle import end_fill
 
 import numpy as np
 
@@ -12,10 +12,11 @@ class MenuLog:
  
         self.user_details = { #'name' : '',
                         #'date': '',
-                        #'name60' : '',
-                        #'date60' : '',
+                        'name' : '',
+                        'date' : '',
                         'participantnumber' : '',
                         'english' : '',
+                        'vision': '',
                         'colour': '',
                         'age' : '',
                         'gender' : '',
@@ -55,15 +56,49 @@ class MenuLog:
             pass
 
         elif menu_id == 60:
+            
+            for entry in self.user_details:
+
+                if entry not in data:
+                    self.user_details[entry] = 'not answered'
+                else:
+                    self.user_details[entry] = data[entry]
+
             self.user_details['participantnumber'] = data['participantnumber']
-            self.user_details['english'] = data['english']
-            self.user_details['vision'] = data['vision']
-            self.user_details['colour'] = data['colour']
-            #self.user_details['name60'] = data['name']
-            self.user_details['age'] = data['age']
-            self.user_details['gender'] = data['gender']
-            self.user_details['games'] = data['games']
-            #self.user_details['date60'] = data['date']
+
+
+            print('USER DETAILS: ', self.user_details)
+            # if 'english' in data:
+            #     self.user_details['english'] = data['english']
+            # else:
+            #     self.user_details['english'] = 'not answered'
+
+            # if 'vision' in data:
+            #     self.user_details['vision'] = data['vision']
+            # else:
+            #     self.user_details['vision'] = 'not answered'
+
+            # if 'vision' in data:
+            #     self.user_details['vision'] = data['vision']
+            # else:
+            #     self.user_details['vision'] = 'not answered'
+
+            # if 'vision' in data:
+            #     self.user_details['vision'] = data['vision']
+            # else:
+            #     self.user_details['vision'] = 'not answered'
+
+            # if 'vision' in data:
+            #     self.user_details['vision'] = data['vision']
+            # else:
+            #     self.user_details['vision'] = 'not answered'
+
+            # self.user_details['colour'] = data['colour']
+            # self.user_details['name60'] = data['name']
+            # # self.user_details['age'] = data['age']
+            # # self.user_details['gender'] = data['gender']
+            # # self.user_details['games'] = data['games']
+            # self.user_details['date60'] = data['date']
             pass
 
    
@@ -137,6 +172,8 @@ class MenuLog:
 
         print(sheet["C11"].value)
         print(user_details)
+
+        print('\n\n Question responses: ', question_responses)
         # sheet["C12"] = 'hello'
 
         # Write personal details
@@ -149,27 +186,68 @@ class MenuLog:
         # sheet["C7"] = user_details[1]['colour'][0][0]
 
         sheet["C3"] = user_details[1]['participantnumber']
-        sheet["C4"]= user_details[1]['english'][0][0]
-        sheet["C5"] = user_details[1]['vision'][0][0]
-        sheet["C6"] = user_details[1]['colour'][0][0]
+        sheet["C4"] = str(user_details[1]['english'])
+        sheet["C5"] = str(user_details[1]['vision'])
+        sheet["C6"] = str(user_details[1]['colour'])
         #self.user_details['name60'] = data['name']
         sheet["C7"] = user_details[1]['age']
-        sheet["C8"] = user_details[1]['gender'][0][0]
+        sheet["C8"] = str(user_details[1]['gender'])
         sheet["C9"] = user_details[1]['games']
 
+
+        # Save ordered data block
+
+        entry_index = 1
+
         row = 16
-        col = 2
+        col = 4
+
+        tot_trials = 15
+
+        for n in range(tot_trials):
+
+            entry_name = 'config_exp_' + str(entry_index) + '_passive'
+
+
+            if entry_name in question_responses[2]:
+
+                print(entry_name, ' is in the dict')
+                # behaviour scores
+                sheet.cell(row = row, column=col).value = question_responses[2][entry_name]['behaviour_perception']
+
+                sheet.cell(row = row, column=col + 1).value = question_responses[2][entry_name]['faultOrMal']
+            else:
+                sheet.cell(row = row, column=col).value = 'Not completed'
+
+                sheet.cell(row = row, column=col + 1).value = 'Not completed'
+
+
+            entry_name = 'config_exp_' + str(entry_index) + '_active'
+
+            if entry_name in question_responses[2]:
+
+                # behaviour scores
+                sheet.cell(row = row + 20, column=col).value = question_responses[2][entry_name]['behaviour_perception']
+
+                sheet.cell(row = row + 20, column=col + 1).value = question_responses[2][entry_name]['faultOrMal']
+            else:
+                sheet.cell(row = row + 20, column=col).value = 'Not completed'
+
+                sheet.cell(row = row + 20, column=col + 1).value = 'Not completed'
+
+            entry_index += 1
+            row += 1
+
+
+
+        # Save the trial order
+        row = 16
+        col = 7
 
 
         for i in range(len(question_responses[1])):
 
             sheet.cell(row = row, column=col).value = question_responses[1][i]
-
-            # behaviour scores
-            sheet.cell(row = row, column=col + 1).value = question_responses[2][question_responses[1][i]]['behaviour_perception']
-
-            sheet.cell(row = row, column=col + 2).value = question_responses[2][question_responses[1][i]]['faultOrMal']
-
             row += 1
 
         workbook.save(filename=directory)
