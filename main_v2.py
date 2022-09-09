@@ -57,6 +57,7 @@ import importlib
 import matplotlib.pyplot as plt
 from matplotlib import animation, rc, rcParams
 rcParams['animation.embed_limit'] = 2**128
+rcParams['toolbar'] = 'None' 
 
 from matplotlib import collections  as mc
 import matplotlib as mpl
