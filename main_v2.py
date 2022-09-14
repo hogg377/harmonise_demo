@@ -761,8 +761,12 @@ def post_test_questions_setup2():
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
 
-    Q1_VALUES = {0: 'A is more likely', 1: '', 2: '', 3: 'A and B are equally likely', 4: '', 5: '',6: 'B is more likely'}
-    Q2_VALUES = {0: 'C is more likely', 1: '', 2: '', 3: "C and D are equally likely", 4: '', 5: '',6: 'D is more likely'}
+    #Q1_VALUES = {0: 'A is more likely', 1: '', 2: '', 3: 'A and B are equally likely', 4: '', 5: '',6: 'B is more likely'}
+    #Q2_VALUES = {0: 'C is more likely', 1: '', 2: '', 3: "C and D are equally likely", 4: '', 5: '',6: 'D is more likely'}
+
+    Q1_VALUES = {0: 'A much more likely', 1: 'A slightly more likely', 2: 'A & B equally likely', 3: 'B slightly more likely', 4: 'B much more likely'}
+    Q2_VALUES = {0: 'C much more likely', 1: 'C slightly more likely', 2: "C & D equally likely", 3: 'D slightly more likely', 4: 'D much more likely'}
+
 
     menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     #menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
@@ -770,15 +774,15 @@ def post_test_questions_setup2():
     menu.add.label('Based on your experience in the last trial, is it more likely that\nA) All the robots were working properly, or that\nB) Some robots were not working properly', max_char=max_char, font_size=title_size, underline=False)
     
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
-    menu.add.range_slider('', default=3, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=800, range_line_height=10, 
+    menu.add.range_slider('', default=2, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=800, range_line_height=10,
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q1_VALUES[x])
     
     menu.add.label('\nIf, in fact, the robots were NOT all working properly, is it more likely that\nC) Some of the robots were FAULTY, or\nD) Some of the robots were MALICIOUS', max_char=max_char, font_size=title_size)
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
-    menu.add.range_slider('', default=3, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=800, range_line_height=10, 
+    menu.add.range_slider('', default=2, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=800, range_line_height=10,
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q2_VALUES[x])
     menu.add.label("\n", max_char=max_char, font_size=3)
-    menu.add.button('When You Have Answered Both Questions\nPlease Click Here To Continue', set_menu_id, 90, menu, True)
+    menu.add.button('When You Have Answered Both Questions Please Click Here To Continue', set_menu_id, 90, menu, True)
     # menu.add.button('Main Menu', set_menu_id, 0)
     menu.add.label("\n", max_char=max_char, font_size=3)
 
