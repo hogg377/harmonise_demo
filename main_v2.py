@@ -74,7 +74,7 @@ from scipy.spatial.distance import cdist, pdist, euclidean
 CONFIG_DIR = "experiment_config_files/version2/"
 # RESULTS_DIR = os.path.join(os.path.expanduser('~'), "OneDrive - University of Bristol", "Empowerment Results")
 RESULTS_DIR = os.path.join('Results/')
-print('Result DIR: ', RESULTS_DIR)
+# print('Result DIR: ', RESULTS_DIR)
 
 # Credentials needed to log to a google sheet
 #   This function was removed at the beta stage
@@ -111,7 +111,7 @@ sys.path.append(CONFIG_DIR)
 
 # --------------GLOBAL VARIABLES------------
 # These initial values shouldn't be changed unless you know what you're doing!!
-DEBUG_MODE_B = True
+DEBUG_MODE_B = False
 SCREEN_RESOLUTION = (1280, 720)
 menu_screen = pygame.display.set_mode((1280, 720))
 current_menu_id = 1
@@ -221,7 +221,7 @@ def run_simulation(exit_to_menu, config_file_name='', list_of_configs=[], show_e
     if use_task_weighted_empowerment:
         config_name_with_parameters = config_name_with_parameters + "_taskweighted"
 
-    print(f'running a simulation with config {config_file_name} and #test {test_number}, exiting to menu {exit_to_menu}')
+    # print(f'running a simulation with config {config_file_name} and #test {test_number}, exiting to menu {exit_to_menu}')
     if not DEBUG_MODE_B:
         sim.main(config_file_name, show_empowerment, use_task_weighted_empowerment, sim_session_id=session_id, log_file_name=config_name_with_parameters)
     
@@ -718,7 +718,7 @@ def test_start_setup(list_of_configs, control_active, show_empowerment, use_task
     global test_number
     # show the third screen
     title = "Experiment Trial"
-    text = ("Press 'Go' when you are ready to start the next trial.")
+    text = ("Press 'Go' when you are ready to start the next trial.\n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
@@ -782,14 +782,14 @@ def post_test_questions_setup2():
     menu.add.range_slider('', default=2, range_values=list(Q2_VALUES.keys()), increment=1, rangeslider_id='faultOrMal', width=800, range_line_height=10,
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q2_VALUES[x])
     menu.add.label("\n", max_char=max_char, font_size=3)
-    menu.add.button('When You Have Answered Both Questions Please Click Here To Continue', set_menu_id, 90, menu, True)
+    menu.add.button('> When You Have Answered Both Questions Please Click Here To Continue <', set_menu_id, 90, menu, True)
     # menu.add.button('Main Menu', set_menu_id, 0)
     menu.add.label("\n", max_char=max_char, font_size=3)
 
     menu.add.label("RECALL THAT:\n"+
                    "- When all robots are 'working properly'...\n'all robots are functioning properly\nand trying to complete the task\nto the best of their ability'\n\n"+
                    "- In a swarm containing 'faulty' robots...\n'at least some robots are broken\nand can’t consistently function properly'\n\n"+
-                   "- In a swarm containing 'malicious' robots...\n'at least some robots are deliberately trying\nto prevent the swarm from being successful'",
+                   "- In a swarm containing 'malicious' robots...\n'at least some robots are deliberately trying\nto prevent the swarm from being successful'\n\n",
                    max_char=max_char, font_size=title_size)
 
     return menu
@@ -936,7 +936,7 @@ def run_experiment():
     for block in block_order:
         if block == 'empowerment_shown':
             # set which menu to start in
-            print("I'm running the ACTIVE block")
+            # print("I'm running the ACTIVE block")
             current_menu_id = 50
             # determine the order to run the sequence
             config_order = np.random.permutation(len(LIVETEST_SEQUENCE_A))
@@ -946,7 +946,7 @@ def run_experiment():
             control_active = True
 
         else:
-            print("I'm running the PASSIVE block")
+            # print("I'm running the PASSIVE block")
             # set which menu to start in
             current_menu_id = 40
             # determine the order to run the sequence
@@ -957,9 +957,9 @@ def run_experiment():
             control_active = False
 
         # shuffle the test sequence order
-        print(f"I'm running experiment block {block} with the config order {config_order}")
+        # print(f"I'm running experiment block {block} with the config order {config_order}")
         configs = configs[config_order]
-        print('Configs for experiment block')
+        # print('Configs for experiment block')
         run_experimental_block(configs.tolist(), control_active, show_empowerment, use_taskweighted_empowerment)
 
     # set the menu ID to the post experiment questions and debreif
@@ -1141,7 +1141,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
         config_name_with_parameters = config_file_name + "_passive"
 
 
-    print(f'running a simulation with config {config_file_name} and #test {test_number}, exiting to menu {exit_to_menu}')
+    # print(f'running a simulation with config {config_file_name} and #test {test_number}, exiting to menu {exit_to_menu}')
     # if not DEBUG_MODE_B:
     #     sim.main(config_file_name, show_empowerment, use_task_weighted_empowerment, sim_session_id=session_id, log_file_name=config_name_with_parameters)
 
@@ -1153,11 +1153,13 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     config = importlib.import_module(config_file_name)
     cfg = config.main()
-    print(cfg)
+    # print(cfg)
 
 
-    fig, ax1 = plt.subplots( figsize=(10,10), dpi=80, facecolor='w', edgecolor='k')
+    fig, ax1 = plt.subplots( figsize=(11,11), dpi=80, facecolor='w', edgecolor='k', frameon=False)
    
+    ax1.set_aspect('equal')
+    
     global line, line1
     # Agent plotting 
     robot_size = 10
@@ -1190,7 +1192,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     random.seed(seed)
     np.random.seed(seed)
 
-    print('\nChosen seed: ', seed)
+    # print('\nChosen seed: ', seed)
 
     #          Creat environment object
     env_map = asim.map()
@@ -1199,10 +1201,10 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     env_map.gen()
 
 
-    ax1.set_ylim([-44,44])
-    ax1.set_xlim([-44,44])
+    ax1.set_ylim([-45,45])
+    ax1.set_xlim([-45,45])
 
-    plt.legend(loc="upper left")
+    # plt.legend(loc="upper left")
 
     # ----------- Plot walls except the opening entry point ---------
     for a in range(len(env_map.obsticles)):
@@ -1476,9 +1478,17 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     SimRecorder.initialise(session_id, config_file_name, seed, control_active)
 
+    ax1.get_xaxis().set_visible(False)
+    ax1.get_yaxis().set_visible(False)
+    plt.axis('off')
+    
     anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=15, blit=True, repeat = False,
-                            fargs = (timesteps, control_active, agent_pos, max_length,
-                                trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
+                                   fargs = (timesteps, control_active, agent_pos, max_length,
+                                   trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
+
+
+    mng = plt.get_current_fig_manager()
+    mng.full_screen_toggle()
 
     plt.show()
     # anim
@@ -1547,7 +1557,7 @@ def run_tutorial():
     global menu_screen
     global current_menu_id
 
-    print("I'm running the tutorial")
+    # print("I'm running the tutorial")
 
     # Create an initialise the menus
     tutorial_start_m = tutorial_start_menu_setup()
