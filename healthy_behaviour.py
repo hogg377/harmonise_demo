@@ -12,6 +12,7 @@ import time
 import matplotlib.pyplot as plt
 from matplotlib import animation, rc, rcParams
 rcParams['animation.embed_limit'] = 2**128
+rcParams['toolbar'] = 'None'
 
 from matplotlib import collections  as mc
 import matplotlib as mpl
@@ -22,54 +23,15 @@ from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from scipy.spatial.distance import cdist, pdist, euclidean
 
 
-
-
-
 ############################################################################################
 def getImage(path):
    return OffsetImage(plt.imread(path, format="png"), zoom=.03)
-
-#   Add image as custom marker
-
-# constant
-# dpi = 72
-path = 'warning.png'
-# # read in our png file
-# im = image.imread(path)
-# image_size = im.shape[1], im.shape[0]
-
-
-# # plot our line with transparent markers, and markersize the size of our image
-# line, = ax.plot((1,2,3,4),(1,2,3,4),"bo",mfc="None",mec="None",markersize=image_size[0] * (dpi/ 96))
-# # we need to make the frame transparent so the image can be seen
-# # only in trunk can you put the image on top of the plot, see this link:
-# # http://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg14534.html
-# ax.patch.set_alpha(0)
-# ax.set_xlim((0,5))
-# ax.set_ylim((0,5))
-
-# # translate point positions to pixel positions
-# # figimage needs pixels not points
-# line._transform_path()
-# path, affine = line._transformed_path.get_transformed_points_and_affine()
-# path = affine.transform_path(path)
-# for pixelPoint in path.vertices:
-#     # place image at point, centering it
-#     fig.figimage(im,pixelPoint[0]-image_size[0]/2,pixelPoint[1]-image_size[1]/2,origin="upper")
-
-# plt.show()
-##########################################################################################################
 
 
 #env_map = map_gen.convert_to_env_object(polys)
 # First set up the figure, the axis, and the plot element we want to animate
 fig, ax1 = plt.subplots( figsize=(10,10), dpi=80, facecolor='w', edgecolor='k')
-# fig, (ax1, ax2) = plt.subplots(nrows = 1, ncols = 2, figsize=(20,10), dpi=80, facecolor='w', edgecolor='k')
-#plt.close()
 
-# dim = 45
-# ax1.set_xlim((-dim, dim))
-# ax1.set_ylim((-dim, dim))
 
 # Set how data is plotted within animation loop
 global line, line1
@@ -136,10 +98,8 @@ env_map.swarm_origin = np.array([44,15])
 env_map.gen()
 
 
-ax1.set_ylim([-44,44])
-ax1.set_xlim([-44,44])
-
-# ax2.set_ylim([0,1])
+ax1.set_ylim([-45,45])
+ax1.set_xlim([-45,45])	
 
 plt.legend(loc="upper left")
 
@@ -155,11 +115,10 @@ for a in range(len(env_map.obsticles)):
 		ax1.plot([env_map.obsticles[a].start[0], env_map.obsticles[a].end[0]], [env_map.obsticles[a].start[1], env_map.obsticles[a].end[1]], '-', color = 'black', lw=3, markeredgecolor = 'black', markeredgewidth = 3) 
 
 
-timesteps = 1000
+timesteps = 1200
 
 
 # ===================== Swarm Faults/Malicious behaviours =========================
-
 
 totSwarm_size = 20
 
@@ -170,7 +129,7 @@ num_sensorfault = 0
 # Channels of communication between certain robots is completely lost
 num_robotblind = 0
 # Motor error causing agents to move half speed with a degree of fluctuation
-num_motorslow = 5
+num_motorslow = 0
 # agents have a persistent heading error 
 num_headingerror = 0
 
@@ -214,48 +173,6 @@ targets.reset()
 score = 0
 
 
-# Declare agent motion noise
-noise = np.random.uniform(-.1,.1,(timesteps, base_swarm.size, 2))
-coverage_data = list()
-time_data = list()
-
-agent_set = np.arange(0, totSwarm_size, 1)
-base_swarm.behaviour = np.random.randint(1,9, totSwarm_size)
-for i in range(10):
-
-	if i%7 == 0 and len(agent_set) >= 1:
-
-		# At each step pick a random agent to spawn
-		pick = np.random.choice(agent_set)
-		agent_set = np.delete(agent_set, np.where(agent_set == pick)[0])
-	
-		base_swarm.agents[pick] = np.array([base_swarm.map.swarm_origin[0], base_swarm.map.swarm_origin[1]])
-		base_swarm.previous_state[pick] = np.array([base_swarm.map.swarm_origin[0], base_swarm.map.swarm_origin[1]])
-		base_swarm.opinion_timelimit[pick] = 50
-		base_swarm.behaviour[pick] = 4
-
-	base_swarm.time = i
-
-	base_swarm.iterate(noise[i-1])
-
-	#print('swarm beh: ', swarmy.behaviour)
-
-	base_swarm.get_state_opinion()
-	#swarmy.died += asim.boundary_death(swarmy, swarmy.map)
-	score += targets.get_state(base_swarm, i, timesteps)
-
-	coverage_data.append(targets.coverage)
-	time_data.append(i)
-
-normal_perf = np.trapz(coverage_data, dx=1)
-
-# ax2.plot(time_data, coverage_data, 'g-', markersize = 5, label='Disperse')
-
-# ax2.set_ylabel('Coverage', fontsize = 15)
-# ax2.set_xlabel('Time (seconds)', fontsize = 15)
-
-
-# ax2.legend(loc='upper left', fontsize = 14)
 
 
 swarmy = faulty_swarm.swarm()
@@ -434,47 +351,13 @@ agent_set = np.arange(0, swarmy.size + malicious_blockers, 1)
 global plot_happiness
 global plot_faulty
 
-plot_happiness = True
+plot_happiness = False
 plot_faulty = False
 
 time_data = list()
 coverage_data = list()
 
-def on_press(event):
-	# print('press', event.key)
-	# sys.stdout.flush()
-	if event.key == 'up':
-		swarmy.behaviour = 1*np.ones(swarmy.size)
-	if event.key == 'left':
-		swarmy.behaviour = 4*np.ones(swarmy.size)
-	if event.key == 'down':
-		swarmy.behaviour = 2*np.ones(swarmy.size)
-	if event.key == 'right':
-		swarmy.behaviour = 3*np.ones(swarmy.size)
-	swarmy.opinion_timer = 1*np.ones(swarmy.size)
-	swarmy.opinion_timelimit = 50*np.ones(swarmy.size)
-	# sys.stdout.flush()
 
-	global plot_happiness
-	global plot_faulty
-
-	if event.key == 'h':
-		# turn on/off agent happiness display
-		plot_happiness = np.logical_not(plot_happiness)
-	if event.key == 'j':
-		# turn on/off agent happiness display
-		plot_faulty = np.logical_not(plot_faulty)
-
-
-
-# pygame stuff
-
-# pygame.init()
-
-
-
-
-fig.canvas.mpl_connect('key_press_event', on_press)
 swarmy.param = 10
 
 agents_withFaults = np.logical_or(swarmy.malicious_broadcasters, swarmy.heading_error)
@@ -501,32 +384,38 @@ def animate(i):
 	global agent_set
 	global plot_happiness
 
-	start = time.time()
 
-	print('swarmy fault active states: ', swarmy.fault_active)
+	# Reset to starting point
+	if i%timesteps == 0:
+
+		swarmy.agents = 1000*np.ones((swarmy.size,2))
+		agent_set = np.arange(0, swarmy.size + malicious_blockers, 1)
+		# coverage_data = list()
 
 	# ---------------------------- Spawn agents from edge of environment over time -------------------------------------
 
 	total_agentSize = swarmy.size + malicious_blockers
 	# input()
 	pos_variance = 4
-	if i%7 == 0 and len(agent_set) >= 1:
+	if i%9 == 0 and len(agent_set) >= 1:
 
-		# At each step pick a random agent to spawn
+	  # At each step pick a random agent to spawn
 		pick = np.random.choice(agent_set)
 		agent_set = np.delete(agent_set, np.where(agent_set == pick)[0])
+		# print('The agent set: ', agent_set)
 		if pick < malicious_blockers:
-			# spawn a malicious agent
+		# spawn a malicious agent
 			malicious_swarm.agents[pick] = np.array([swarmy.map.swarm_origin[0], swarmy.map.swarm_origin[1]])
 		else:
 			swarmy.agents[pick-malicious_swarm.size] = np.array([swarmy.map.swarm_origin[0], swarmy.map.swarm_origin[1] + np.random.uniform(-pos_variance, pos_variance)])
 			swarmy.previous_state[pick-malicious_swarm.size] = np.array([swarmy.map.swarm_origin[0], swarmy.map.swarm_origin[1] + np.random.uniform(-pos_variance ,pos_variance)])
 			swarmy.opinion_timelimit[pick-malicious_swarm.size] = 50
 			swarmy.behaviour[pick-malicious_swarm.size] = 4
-	if i <= 150:
-		swarmy.behaviour = 4*np.ones(swarmy.size)
-	else:
-		swarmy.param = 60
+		if i <= 150:
+			swarmy.behaviour = 4*np.ones(swarmy.size)
+			swarmy.param = 10
+		else:
+			swarmy.param = 60
 
 
 	# ------------------------------------------------------------------------------------------------------------------
@@ -571,7 +460,7 @@ def animate(i):
 	time_text.set_text('Time: (%d/%d)' % (i, timesteps))
 
 	#box_text.set_text('Fitness: %.2f' % (score/len(targets.targets)))
-	cov_text.set_text('Coverage: %.2f' % (targets.coverage))
+	# cov_text.set_text('Coverage: %.2f' % (targets.coverage))
 
 	#mass.set_data(swarmy.centermass[0], swarmy.centermass[1])
 
@@ -620,70 +509,22 @@ def animate(i):
 	else:
 		faulty_pos.set_data([],[])
 
-
-	# collided_agents = swarmy.agents[swarmy.collision_state == 1]
-	# print(collided_agents)
-	# for entry in collided_agents:
-	# 	# ab = AnnotationBbox(getImage(path), (entry[0], entry[1]), frameon=False)
-	# 	# ax1.add_artist(ab)
-	# 	ax1.plot(entry, marker = getImage(path))
-	# fig.canvas.draw()
-
-	# happy.set_data(setB.T[0], setB.T[1])
-	# unhappy.set_data(setA.T[0], setA.T[1])
-
-	# happy_agents = np.concatenate((happy_agents, setB), axis = 0)
-	# unhappy_agents = np.concatenate((unhappy_agents, setA), axis = 0)
-
-	# if len(happy_agents) > max_length:
-
-	# 	happy_agents = happy_agents[swarmy.size:]
-		
-
-	# if len(unhappy_agents) > .5*max_length:
-
-	# 	unhappy_agents = unhappy_agents[swarmy.size:]
-
-
-
-	# high_emp.set_data(happy_agents.T[0], happy_agents.T[1])
-	# low_emp.set_data(unhappy_agents.T[0], unhappy_agents.T[1])
-
-	
-	# time_data.append(i)
-
-
-
-	# cov_line.set_data(time_data, coverage_data)
-
-	taken = 1000*(time.time() - start)
-	sim_speed.append(taken)
-	
-	# return (line1, line2, line3, time_text, box_text,cov_text, 
-	# 		agent_headings, trails, malicious_trails,agent_pos, behaviour_text, cov_line, 
-	# 		happy_agents, unhappy_agents, faulty_pos)
-	return (time_text,cov_text, 
-			agent_headings, trails, malicious_trails,agent_pos, 
+	return (time_text, agent_headings, trails, malicious_trails,agent_pos, 
 			happy_agents, unhappy_agents, faulty_pos)
 
 
+ax1.get_xaxis().set_visible(False)
+ax1.get_yaxis().set_visible(False)
+ax1.set_aspect('equal')
 
+mng = plt.get_current_fig_manager()
+mng.full_screen_toggle()	
 
 anim = animation.FuncAnimation(fig, animate, init_func=init,
-                            frames=timesteps, interval=30, blit=True, repeat = False)
+                            frames=timesteps, interval=30, blit=True, repeat = True)
 
-
-# Note: below is the part which makes it work on Colab
-#rc('animation', html='jshtml')
 # anim.save('outputs/malicious/advPres/happiness.mp4', fps=25, dpi=100)
 anim
 
-
 plt.show()
 
-# print('Integral of Coverage over time of normal behaviour = %.2f' % (normal_perf/timesteps))
-# print('Integral of Coverage over time of with faults = %.2f' % (np.trapz(coverage_data, dx=1)/timesteps))
-
-# plt.plot(sim_speed)
-# plt.ylabel('Step speed (ms)')
-# plt.show()

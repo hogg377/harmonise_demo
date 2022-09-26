@@ -387,7 +387,7 @@ def instructions_menu_setup2():
     menu.add.label(title1, max_char=max_char, font_size=title_size)#, align=pygame_menu.locals.ALIGN_LEFT)
     menu.add.label(text1, max_char=max_char, font_size=text_size)  # , align=pygame_menu.locals.ALIGN_LEFT)
     # menu.add.button('Ok', set_menu_id, 30,font_size=20)
-    menu.add.button('Ok', run_tutorial, font_size=button_size)
+    menu.add.button('Ok', run_experiment, font_size=button_size)
     menu.add.label("\n", max_char=max_char, font_size=text_size)  # , align=pygame_menu.locals.ALIGN_LEFT)
 
     ##### !!!!!!!!!!!!! Point to run experiment, skipping tutorial
@@ -1487,11 +1487,11 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
                                    trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
 
 
-    mng = plt.get_current_fig_manager()
-    mng.full_screen_toggle()
+    # mng = plt.get_current_fig_manager()
+    # mng.full_screen_toggle()
 
-    plt.show()
-    # anim
+    # plt.show()
+    anim
 
     # Save the coverage achieved 
     SimRecorder.record_coverage(coverage_data)
