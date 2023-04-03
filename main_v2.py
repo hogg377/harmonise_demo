@@ -267,9 +267,9 @@ def information_sheet1_setup():
 
 def instructions_menu_setup1():
     global menu_screen
-    title1 = ("\nPlease read the following instructions carefully\n")
+    title1 = ("\nDemo Information\n")
 
-    text1 = ("In this experiment, you will observe and interact with a team of virtual robots.\n\n"+
+    text1 = ("\nIn this demo, you will observe and interact with a team of virtual robots.\n\n"+
 
         "Your task is to identify whether this team is operating properly,\nor if it contains 'faulty' robots or 'malicious' robots.\n"+
 
@@ -281,23 +281,13 @@ def instructions_menu_setup1():
         "\n- In a swarm containing 'faulty' robots...\n'at least some robots are broken\nand can’t consistently function properly'\n"+
         "\n- In a swarm containing 'malicious' robots...\n'at least some robots are deliberately trying\nto prevent the swarm from being successful'"+
 
-
-        "\n\nBoth faulty and malicious robots can tend to prevent a team from completing their task effectively."+
-        "\n\nYou will carry out two blocks of 12 trials. This will take approximately 20-30 minutes."+
-        "\n\nIn one block of trials, you can give commands to the robots to help them carry out their task."+
-        "\nIn the other, you can only observe the behaviour of the robots."+
+        "\n\nBoth faulty and malicious robots can tend to prevent a team from completing their task effectively.")
         
 
-        "\n\nAt the end of each trial, you will be asked to answer a few short questions. "+
-
-        "\nPlease answer these questions before moving on to the next trial. "+
-
-        "\nBefore the experiment starts, a tutorial will explain how the trials work.\n")
-    
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    menu = pygame_menu.Menu('Experiment Instructions', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
-    menu.add.label(title1, max_char=max_char, font_size=title_size)#, align=pygame_menu.locals.ALIGN_LEFT)
+    menu = pygame_menu.Menu('Demo Instructions', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
+    # menu.add.label(title1, max_char=max_char, font_size=title_size)#, align=pygame_menu.locals.ALIGN_LEFT)
     menu.add.label(text1, max_char=max_char, font_size=text_size)  # , align=pygame_menu.locals.ALIGN_LEFT)
     # menu.add.button('Ok', set_menu_id, 30,font_size=20)
     menu.add.button('Ok', set_menu_id, 21, font_size=button_size)
@@ -331,8 +321,8 @@ def instructions_menu_setup2():
 
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    menu = pygame_menu.Menu('Experiment Instructions', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
-    menu.add.label(title1, max_char=max_char, font_size=title_size)#, align=pygame_menu.locals.ALIGN_LEFT)
+    menu = pygame_menu.Menu('Robot Team Task', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
+    # menu.add.label(title1, max_char=max_char, font_size=title_size)#, align=pygame_menu.locals.ALIGN_LEFT)
     menu.add.label(text1, max_char=max_char, font_size=text_size)  # , align=pygame_menu.locals.ALIGN_LEFT)
     # menu.add.button('Ok', set_menu_id, 30,font_size=20)
     menu.add.button('Ok', run_experiment, font_size=button_size)
@@ -495,16 +485,16 @@ def tutorial_complete_setup():
 def experimental_block_1_setup():
     global menu_screen
     # show the third screen
-    title = "Experiment (Passive)"
+    title = "Attempt 1 (Passive)"
     text = ("You will now be presented with a simulation of the robot team exploring an environment. \n\n"
 
             "Your task is to observe the robot team and identify whether the team is operating properly, "
-            "\nor if some of the robots are faulty, or if some of the robots are malicious. "
+            "\nor if some of the robots are faulty or malicious. "
             "\nFaulty robots have flaws that cause them to behave abnormally. \nMalicious robots deliberately try to disrupt the team.\n\n"
 
             "Remember: the team's task is to explore the whole building as quickly as possible."
 
-            "\n\nPress 'Continue' to start the block.\n")
+            "\n\nPress 'Continue' to start the simulation.\n")
             # "If you wish to repeat the tutorial, press 'Repeat Tutorial'\n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
@@ -519,7 +509,7 @@ def experimental_block_1_setup():
 def experimental_block_2_setup():
     global menu_screen
     # show the third screen
-    title = "Experimental Block (Active)"
+    title = "Attempt 2 (Active)"
     text = ("You will now be presented with a simulation where you have some control over the robot team.\n\n"
 
             "In these trials, you can direct all the robots to travel, North, or East, or South, or West \n"
@@ -531,7 +521,7 @@ def experimental_block_2_setup():
 
             "Remember: the team's task is to explore the whole building as quickly as possible."
 
-            "\nPress 'Continue' to start the block.\n")
+            "\nPress 'Continue' to start the simulation.\n")
 
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
@@ -623,8 +613,8 @@ def test_start_setup(config, control_active):
     global menu_screen
     global test_number
     # show the third screen
-    title = "Experiment Trial"
-    text = ("Press 'Go' when you are ready to start the next trial.\n")
+    title = "Attempt 1"
+    text = ("Press 'Go' when you are ready to start the trial.\n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
@@ -691,6 +681,8 @@ def post_test_questions_setup2(config, control_active):
     #     next_menu = 92
     # else:
     #     next_menu = 91
+
+    # menu.add.vertical_fill()
 
     menu.add.button('> Click here to see the answer <', set_menu_id, 91, menu, False)
     # menu.add.button('Main Menu', set_menu_id, 0)
@@ -805,6 +797,8 @@ def run_experimental_block(list_of_configs, control_active):
 
 
     config = random.choice(list_of_configs)
+
+    list_of_configs.remove(config)
 
     print('This is the chosen config: ', config)
 
@@ -938,7 +932,7 @@ def run_experiment():
 
     block_order = ['passive', 'active']
 
-
+    
     current_menu_id = 40
     # determine the order to run the sequence
     config_order = np.random.permutation(len(LIVETEST_SEQUENCE_A))
@@ -1196,15 +1190,8 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], control_
 
     fsize = 12
 
-    if "_fam_3" in config_file_name:
-        # fixed seed for tutorial 3 where collisions are shown
-        seed = 2665807705
-    elif "_fam_1" in config_file_name or "_fam_2" in config_file_name:
-        # fixed seed for normal behaviour in tut 1 and 2
-        seed = 1923979586
-    else:
-        seed = random.randrange((2**32) - 1)
-    # seed = 99999
+    # Always keep seed the same for the purpose of replays
+    seed = 99999
 
     random.seed(seed)
     np.random.seed(seed)
