@@ -83,21 +83,34 @@ RESULTS_DIR = os.path.join('Results/')
 # CREDENTIALS_FILE_PATH = 'halogen-order-334818-44181576e631.json' save_details() has been removed
 
 # Set the configuration files to present to the participant
-LIVETEST_SEQUENCE_A = [
-    'config_exp_1', 'config_exp_2', 'config_exp_3',
-    'config_exp_4', 'config_exp_5', 'config_exp_6',
-    'config_exp_7', 'config_exp_8', 'config_exp_9',
-    'config_exp_10', 'config_exp_11', 'config_exp_12',
-    'config_exp_13', 'config_exp_14', 'config_exp_15'
-]
-LIVETEST_SEQUENCE_B = [
-    'config_exp_1', 'config_exp_2', 'config_exp_3',
-    'config_exp_4', 'config_exp_5', 'config_exp_6',
-    'config_exp_7', 'config_exp_8', 'config_exp_9',
-    'config_exp_10', 'config_exp_11', 'config_exp_12',
-    'config_exp_13', 'config_exp_14', 'config_exp_15'
-]
+# LIVETEST_SEQUENCE_A = [
+#      'config_exp_5', 'config_exp_6',
+#     'config_exp_7', 'config_exp_8', 'config_exp_9',
+#     'config_exp_10', 'config_exp_11', 'config_exp_12',
+#     'config_exp_13', 'config_exp_14', 'config_exp_15'
+# ]
+# LIVETEST_SEQUENCE_B = [
+#      'config_exp_5', 'config_exp_6',
+#     'config_exp_7', 'config_exp_8', 'config_exp_9',
+#     'config_exp_10', 'config_exp_11', 'config_exp_12',
+#     'config_exp_13', 'config_exp_14', 'config_exp_15'
+# ]
+
+# reduce to two options of one faulty trial and one malicious trial
+LIVETEST_SEQUENCE_A = ['config_exp_7', 'config_exp_10']
+LIVETEST_SEQUENCE_B = ['config_exp_7', 'config_exp_10']
+
+
 TUTORIAL_SEQUENCE_A = ['config_fam_1', 'config_fam_2', 'config_fam_3', 'config_fam_4']
+
+global answer_dict
+answer_dict = {1: 'healthy', 2: 'healthy', 3: 'healthy',
+    4: 'healthy', 5: 'faulty', 6: 'faulty',
+    7: 'faulty', 8: 'malicious', 9: 'malicious',
+    10: 'malicious', 11: 'malicious', 12: 'malicious',
+    13: 'faulty', 14: 'faulty', 15: 'faulty'}
+
+
 
 # Add config directory to all config files:
 LIVETEST_SEQUENCE_A = [string for string in LIVETEST_SEQUENCE_A]
@@ -122,6 +135,8 @@ test_number = 0
 
 # logging
 menu_log = []
+global current_config
+global last_config_run
 last_config_run = 'none'
 
 # font sizes
@@ -167,9 +182,10 @@ def set_menu_id(menu_id, menu=[], save_details_b=False):
     global menu_log
     global last_config_run
     global control_active
+    global current_config
 
     # If the current menu is directly related to a simulation then keep a record of the config name used in that simulation
-    if current_menu_id == 92:
+    if current_menu_id == 92 or current_menu_id == 91:
         current_config = last_config_run
     else:
         current_config = 'none'
@@ -178,8 +194,8 @@ def set_menu_id(menu_id, menu=[], save_details_b=False):
     #   The menu ID MUST be known to menu_log
     # if save_details_b:
     #     menu_log.save_responses(menu, current_menu_id, current_config)
-    # if save_details_b:
-    #     menu_log.save_responses(menu, current_menu_id, current_config)
+    if save_details_b:
+        menu_log.save_responses(menu, current_menu_id, current_config)
 
 
     # Set the current menu id which will cause the menu rendering function to change which menu is displayed
@@ -251,9 +267,9 @@ def information_sheet1_setup():
 
 def instructions_menu_setup1():
     global menu_screen
-    title1 = ("\nPlease read the following instructions carefully\n")
+    title1 = ("\nDemo Information\n")
 
-    text1 = ("In this experiment, you will observe and interact with a team of virtual robots.\n\n"+
+    text1 = ("\nIn this demo, you will observe and interact with a team of virtual robots.\n\n"+
 
         "Your task is to identify whether this team is operating properly,\nor if it contains 'faulty' robots or 'malicious' robots.\n"+
 
@@ -265,23 +281,13 @@ def instructions_menu_setup1():
         "\n- In a swarm containing 'faulty' robots...\n'at least some robots are broken\nand can’t consistently function properly'\n"+
         "\n- In a swarm containing 'malicious' robots...\n'at least some robots are deliberately trying\nto prevent the swarm from being successful'"+
 
-
-        "\n\nBoth faulty and malicious robots can tend to prevent a team from completing their task effectively."+
-        "\n\nYou will carry out two blocks of 12 trials. This will take approximately 20-30 minutes."+
-        "\n\nIn one block of trials, you can give commands to the robots to help them carry out their task."+
-        "\nIn the other, you can only observe the behaviour of the robots."+
+        "\n\nBoth faulty and malicious robots can tend to prevent a team from completing their task effectively.")
         
 
-        "\n\nAt the end of each trial, you will be asked to answer a few short questions. "+
-
-        "\nPlease answer these questions before moving on to the next trial. "+
-
-        "\nBefore the experiment starts, a tutorial will explain how the trials work.\n")
-    
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    menu = pygame_menu.Menu('Experiment Instructions', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
-    menu.add.label(title1, max_char=max_char, font_size=title_size)#, align=pygame_menu.locals.ALIGN_LEFT)
+    menu = pygame_menu.Menu('Demo Instructions', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
+    # menu.add.label(title1, max_char=max_char, font_size=title_size)#, align=pygame_menu.locals.ALIGN_LEFT)
     menu.add.label(text1, max_char=max_char, font_size=text_size)  # , align=pygame_menu.locals.ALIGN_LEFT)
     # menu.add.button('Ok', set_menu_id, 30,font_size=20)
     menu.add.button('Ok', set_menu_id, 21, font_size=button_size)
@@ -315,8 +321,8 @@ def instructions_menu_setup2():
 
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
-    menu = pygame_menu.Menu('Experiment Instructions', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
-    menu.add.label(title1, max_char=max_char, font_size=title_size)#, align=pygame_menu.locals.ALIGN_LEFT)
+    menu = pygame_menu.Menu('Robot Team Task', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
+    # menu.add.label(title1, max_char=max_char, font_size=title_size)#, align=pygame_menu.locals.ALIGN_LEFT)
     menu.add.label(text1, max_char=max_char, font_size=text_size)  # , align=pygame_menu.locals.ALIGN_LEFT)
     # menu.add.button('Ok', set_menu_id, 30,font_size=20)
     menu.add.button('Ok', run_experiment, font_size=button_size)
@@ -479,22 +485,22 @@ def tutorial_complete_setup():
 def experimental_block_1_setup():
     global menu_screen
     # show the third screen
-    title = "Experiment Block (Passive)"
-    text = ("You will now be presented with a block of trials. You do not need to press \nthe arrow keys, just observe.\n\n"
+    title = "Attempt 1 (Passive)"
+    text = ("You will now be presented with a simulation of the robot team exploring an environment. \n\n"
 
             "Your task is to observe the robot team and identify whether the team is operating properly, "
-            "\nor if some of the robots are faulty, or if some of the robots are malicious. "
-            "\nFaulty robots have flaws that cause them to behave abormally. \nMalicious robots deliberately try to disrupt the team.\n\n"
+            "\nor if some of the robots are faulty or malicious. "
+            "\nFaulty robots have flaws that cause them to behave abnormally. \nMalicious robots deliberately try to disrupt the team.\n\n"
 
             "Remember: the team's task is to explore the whole building as quickly as possible."
 
-            "\n\nPress 'Continue' to start the block.\n")
+            "\n\nPress 'Continue' to start the simulation.\n")
             # "If you wish to repeat the tutorial, press 'Repeat Tutorial'\n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label(text, max_char=max_char, font_size=title_size)
-    menu.add.button('Continue', set_menu_id, 90)  # at the moment, this goes traight to block 2 as I am not able to link it to the simulation.
+    menu.add.button('Continue', set_menu_id, 93)  # at the moment, this goes traight to block 2 as I am not able to link it to the simulation.
     # menu.add.button('Repeat Tutorial', run_tutorial)
     return menu
 #end function
@@ -503,8 +509,8 @@ def experimental_block_1_setup():
 def experimental_block_2_setup():
     global menu_screen
     # show the third screen
-    title = "Experimental Block (Active)"
-    text = ("You will now be presented with a block of trials where you have some \ncontrol over the robot team.\n\n"
+    title = "Attempt 2 (Active)"
+    text = ("You will now be presented with a simulation where you have some control over the robot team.\n\n"
 
             "In these trials, you can direct all the robots to travel, North, or East, or South, or West \n"
             "for a short period by pressing an arrow key on your keyboard."
@@ -515,13 +521,13 @@ def experimental_block_2_setup():
 
             "Remember: the team's task is to explore the whole building as quickly as possible."
 
-            "\nPress 'Continue' to start the block.\n")
+            "\nPress 'Continue' to start the simulation.\n")
 
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label(text, max_char=max_char, font_size=title_size)
-    menu.add.button('Continue', set_menu_id, 90)  # at the moment, the code goes straight to the final consent.
+    menu.add.button('Continue', set_menu_id, 93)  # at the moment, the code goes straight to the final consent.
     if DEBUG_MODE_B:
         menu.add.button('Quit (Debug)', set_menu_id, -1, menu, True)  # Alternatively, given that this is the second block, participants can decide just to quit the experiment.
     return menu
@@ -559,67 +565,25 @@ def save_details(menu):
 #end function
 
 
-def details_setup():
+def end_screen():
     global menu_screen
 
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
 
     title = "Final Questions"
-    text = ("Please answer the following final questions and then press 'Finish'. Thanks!\n")
+    text = ("Thank you for taking part in this demo. Press Finish to return to the start.\n")
 
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     menu.add.label(text, max_char=max_char, font_size=title_size)
-    menu.add.text_input('Please enter your participant number here: ', default='', textinput_id='participantnumber', input_underline='_', input_underline_len=8) 
-    
-    menu.add.text_input('Age (in numbers):  ', default='', textinput_id='age', input_underline='_', input_underline_len=12)
-    menu.add.dropselect(title='Gender:', items=[('Female',0),('Male',1),('Non-Binary',2),('Prefer Not to Say',3)],dropselect_id = 'gender', font_size=title_size, selection_option_font_size=title_size-2)
-    #menu.add.text_input('Is English your first language? (Y/N):  ', default='', textinput_id='english', input_underline='_', input_underline_len=0)
-    menu.add.dropselect(title='Is English your first language?', items=[('Yes' ,0), ('No', 1)], dropselect_id = 'english', font_size=title_size, selection_option_font_size=title_size-2)
-    #menu.add.text_input('Do you have normal / corrected-to-normal vision? (Y/N):  ', default='', textinput_id='vision', input_underline='_', input_underline_len=0))
-    menu.add.dropselect(title='Do you have normal / corrected-to-normal vision?', items=[('Yes', 0), ('No', 1)], dropselect_id = 'vision', font_size=title_size, selection_option_font_size=title_size-2)
-    #menu.add.text_input('Do you have colour blindness or a colour vision deficiency? (Y/N):   ', default='', textinput_id='colour')
-    menu.add.dropselect(title='Do you have colour blindness or a colour vision deficiency?', items=[('Yes', 0), ('No', 1)], dropselect_id = 'colour', font_size=title_size, selection_option_font_size=title_size-2)
-    menu.add.text_input('How many hours per week do you play video games, on average?: ', default='', textinput_id='games', input_underline='_', input_underline_len=12)
     
     #menu.add.button('Finish', set_menu_id, 70, menu, True)
-    menu.add.button('Finish',  set_menu_id, -1, menu, True)
+    menu.add.button('Finish',  set_menu_id, 40, menu, False)
     return menu
 #end function
 
 
-#THIS FUNCTION HAS BEEN REMOVED
-def debrief_setup():
-    global menu_screen
-    title = "Debrief"
-    text = ("Thank you for your participation. Our an experimental study aims to measure the effect on human-robot teaming of each robot team member "
-            "indicating its own degree of “empowerment”. \n"
-            "At any point in time, a robot's empowerment represents the degree of control that it "
-            "estimates that it has (e.g., the number of different ways in which it can change its environment).\n"
-            "The present study was designed to test the effect of indicating this empowerment measure to human team members. "
-            "We aimed to understand if being aware of each robot's empowerment state would improve participant performance on a collective task "
-            "and/or change their attitude to the human-robot team.\n"
-            "We asked participants to team with virtual dogs in order to guide virtual sheep to a safe area. "
-            "Participants could add or remove dogs to facilitate the task. \n In one block of trials, the empowerment "
-            "state of each dog was indicated by its color. In the other block of trials, the empowerment state was not shown.\n"
-            "The hypothesis being tested was that participants' performance would improve when empowerment state is shown and that "
-            "their sense of involvement in the task would also be greater.\n"
-            "Performance was measured through an Efficiency Score that combined the speed and efficiency with which each trial was completed, and involvement was measured via follow-up questions "
-            "about the participant's experience of the task. Results will be used to further improve our understanding of human-robot interaction.\n"
-            "\n Useful Reading:"
-            "\n - Salge, C., Glackin, C., & Polani, D. (2014). Empowerment–an introduction. In Guided Self-Organization: Inception (pp. 67-114)."
-            " Springer, Berlin, Heidelberg."
-            "\n - Limerick, H., Coyle, D., & Moore, J. W. (2014). The experience of agency in human-computer interactions: a review."
-            "\n Frontiers in Human Neuroscience, 8, 643.")
-    SCREEN_W, SCREEN_H = menu_screen.get_size()
-    BORDER = 20
-    menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER,
-                        theme=our_theme)
-    menu.add.label(text, max_char=max_char, font_size=text_size, align=pygame_menu.locals.ALIGN_LEFT)
-    menu.add.button('Continue', set_menu_id, 80)
-    # menu.add.button('Quit', pygame_menu.events.EXIT)
-    return menu
-#end function
+
 
 
 #THIS FUNCTION HAS BEEN REMOVED
@@ -645,12 +609,12 @@ def final_consent_setup():
 #end function
 
 
-def test_start_setup(list_of_configs, control_active, show_empowerment, use_taskweighted_empowerment):
+def test_start_setup(config, control_active):
     global menu_screen
     global test_number
     # show the third screen
-    title = "Experiment Trial"
-    text = ("Press 'Go' when you are ready to start the next trial.\n")
+    title = "Attempt 1"
+    text = ("Press 'Go' when you are ready to start the trial.\n")
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
     menu = pygame_menu.Menu(title, SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
@@ -659,7 +623,7 @@ def test_start_setup(list_of_configs, control_active, show_empowerment, use_task
 
     # menu.add.button('Go', run_simulation, 91, '', list_of_configs, show_empowerment, use_taskweighted_empowerment)
 
-    menu.add.button('Go', run_swarmsim, 92, '', list_of_configs, control_active, show_empowerment, use_taskweighted_empowerment)
+    menu.add.button('Go', run_swarmsim, 90, config, [], control_active, False)
 
 
 
@@ -667,6 +631,7 @@ def test_start_setup(list_of_configs, control_active, show_empowerment, use_task
         menu.add.button('Skip', set_menu_id, 0)
         menu.add.button('Main Menu', set_menu_id, 0)
     return menu
+
 #end function
 
 
@@ -688,7 +653,7 @@ def post_test_questions_setup1():
 #end function
 
 
-def post_test_questions_setup2():
+def post_test_questions_setup2(config, control_active):
     global menu_screen
     SCREEN_W, SCREEN_H = menu_screen.get_size()
     BORDER = 20
@@ -696,47 +661,114 @@ def post_test_questions_setup2():
     #Q1_VALUES = {0: 'A is more likely', 1: '', 2: '', 3: 'A and B are equally likely', 4: '', 5: '',6: 'B is more likely'}
     #Q2_VALUES = {0: 'C is more likely', 1: '', 2: '', 3: "C and D are equally likely", 4: '', 5: '',6: 'D is more likely'}
 
-    Q1_VALUES = {0: 'A) Faulty', 1: 'Not sure', 2: 'B) Malicious'}
+    Q1_VALUES = {0: 'Normal', 1: 'Not sure', 2: 'Abnormal'}
     
+
 
     menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
     #menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
     
-    menu.add.label('Based on your experience in the last trial, is it more likely that\nA) Some of the robots were Faulty, or that \n B) Some of the robots were Malicious', max_char=max_char, font_size=title_size, underline=False)
+    menu.add.label('Based on your experience in the last trial, is it more likely that\nA) All the robots were working properly, or that\nB) Some robots were not working properly', max_char=max_char, font_size=title_size, underline=False)
     
     # menu.add.label('From not at all (left) to completely (right)', max_char=max_char, font_size=text_size)
     menu.add.range_slider('', default=2, range_values=list(Q1_VALUES.keys()), increment=1, rangeslider_id='behaviour_perception', width=800, range_line_height=10,
         range_text_value_color=(255, 0, 125), range_text_value_enabled=True, slider_text_value_enabled=False, value_format=lambda x: Q1_VALUES[x])
     
-   
-    menu.add.button('> When You Have Answered Both Questions Please Click Here To Finish <', set_menu_id, 0, menu, True)
+    menu.add.label("\n", max_char=max_char, font_size=3)
+    
+    # split = config.split('_')[2]
+    # if answer_dict[int(split)] == 'faulty':
+    #     next_menu = 92
+    # else:
+    #     next_menu = 91
+
+    # menu.add.vertical_fill()
+
+    menu.add.button('> Click here to see the answer <', set_menu_id, 91, menu, False)
     # menu.add.button('Main Menu', set_menu_id, 0)
-    # menu.add.label("\n", max_char=max_char, font_size=3)
+    menu.add.label("\n", max_char=max_char, font_size=3)
 
-    # menu.add.label("RECALL THAT:\n"+
-    #                "- When all robots are 'working properly'...\n'all robots are functioning properly\nand trying to complete the task\nto the best of their ability'\n\n"+
-    #                "- In a swarm containing 'faulty' robots...\n'at least some robots are broken\nand can’t consistently function properly'\n\n"+
-    #                "- In a swarm containing 'malicious' robots...\n'at least some robots are deliberately trying\nto prevent the swarm from being successful'\n\n",
-    #                max_char=max_char, font_size=title_size)
+
 
     return menu
 #end function
 
 
-# THIS FUNCTION HAS BEEN REMOVED
-def personal_details_setup():
+def post_trial_answer1(config, control_active):
     global menu_screen
+    # global last_config_run
+    global current_config
+    global answer_dict
+    global last_config_run
+    
+
+
     SCREEN_W, SCREEN_H = menu_screen.get_size()
-    BORDER=20
-    menu = pygame_menu.Menu('Enter Details', SCREEN_W-BORDER, SCREEN_H-BORDER,
-                        theme=pygame_menu.themes.THEME_BLUE)
-    menu.add.text_input('Name :', default='Chell', textinput_id='name')
-    menu.add.text_input('Occupation :', default='Tester', textinput_id='occupation')
-    menu.add.text_input('Interests :', default='Solving puzzles to advance science', textinput_id='interests')
-    menu.add.selector('Favourate Food :', [('Cake', 1), ('Other', 2)], onchange=set_difficulty, selector_id='food')
-    menu.add.button('Done', save_personal_details, menu)
+    BORDER = 20
+
+    # print('\n\nThe answer is ', last_config_run)
+
+    # print('answer dict:' , answer_dict)
+    # print('current config: ', current_config)
+
+ 
+    menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
+    #menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
+    
+    menu.add.label('The correct answer was faultyyyyy', max_char=max_char, font_size=title_size, underline=False, label_id='answer_text1')
+    menu.add.label('\n', max_char=max_char, font_size=title_size, underline=False)
+    menu.add.label('The correct answer was faultyyyyy', max_char=max_char, font_size=title_size, underline=False, label_id='answer_text2')
+    menu.add.label('The correct answer was faultyyyyy', max_char=max_char, font_size=title_size, underline=False, label_id='answer_text3')
+    
+    # menu.add.button('> Continue <', set_menu_id, 50, menu, True)
+    # menu.add.button('> Replay Trial? <', set_menu_id, 50, menu, True)
+    menu.add.label('\n', max_char=max_char, font_size=title_size, underline=False)
+    menu.add.button('> Watch replay <', run_swarmsim, 50, config, [], True, True)
+
+    
+    # menu.add.button('Main Menu', set_menu_id, 0)
+    menu.add.label("\n", max_char=max_char, font_size=3)
+
     return menu
-#end function
+
+def post_trial_answer2(config, control_active):
+    global menu_screen
+    # global last_config_run
+    global current_config
+    global answer_dict
+    
+
+
+    SCREEN_W, SCREEN_H = menu_screen.get_size()
+    BORDER = 20
+
+    # print('\n\nThe answer is ', last_config_run)
+
+    # print('answer dict:' , answer_dict)
+    # print('current config: ', current_config)
+
+ 
+    menu = pygame_menu.Menu('Done!', SCREEN_W - BORDER, SCREEN_H - BORDER, theme=our_theme)
+    #menu.add.label('Please answer the following two questions...\n', max_char=max_char, font_size=title_size)
+    
+    menu.add.label('The correct answer was faultyyyyy\n', max_char=max_char, font_size=title_size, underline=False, label_id='answer_text1')
+
+    menu.add.label('\n', max_char=max_char, font_size=title_size, underline=False)
+    menu.add.label('The correct answer was faultyyyyy', max_char=max_char, font_size=title_size, underline=False, label_id='answer_text2')
+    menu.add.label('The correct answer was faultyyyyy', max_char=max_char, font_size=title_size, underline=False, label_id='answer_text3')
+
+    menu.add.label('\n', max_char=max_char, font_size=title_size, underline=False)
+    menu.add.button('> Watch replay <', run_swarmsim, 50, config, [], True, True)
+    # menu.add.button('> Replay Trial? <', set_menu_id, 50, menu, True)
+
+
+    
+    # menu.add.button('Main Menu', set_menu_id, 0)
+    menu.add.label("\n", max_char=max_char, font_size=3)
+
+    return menu
+
+
 
 
 def draw_menu_background():
@@ -747,7 +779,7 @@ def draw_menu_background():
 #end function
 
 
-def run_experimental_block(list_of_configs, control_active, show_empowerment, use_taskweighted):
+def run_experimental_block(list_of_configs, control_active):
     """"
     Runs a set of experiments. Dynamic switches to the parameter values used in the configurations are processed in here
     
@@ -758,18 +790,36 @@ def run_experimental_block(list_of_configs, control_active, show_empowerment, us
 
     global test_number
     global current_menu_id
+    global last_config_run
+    global answer_dict
     test_number = 0
     is_test_complete_b = False
+
+
+    config = random.choice(list_of_configs)
+
+    list_of_configs.remove(config)
+
+    # print('This is the chosen config: ', config)
+
 
     # Create and setup the menus
     experimental_block_1_setup_m = experimental_block_1_setup()
     experimental_block_2_setup_m = experimental_block_2_setup()
-    test_start_setup_m = test_start_setup(list_of_configs, control_active, show_empowerment, use_taskweighted)
-    post_test_questions_m1 = post_test_questions_setup1()
-    post_test_questions_m2 = post_test_questions_setup2()
+    test_start_setup_m = test_start_setup(config, control_active)
+    
+    question_window = post_test_questions_setup2(config, control_active)
 
+    post_trial1 = post_trial_answer1(config, control_active)
+
+    post_trial2 = post_trial_answer2(config, control_active)
+
+    fault_text1 = "The team had 6 robots which were experiencing a sensor fault, causing incorrect "
+    fault_text2 =  "range measurement. This causes the robots to collide with other robots and with walls. "
+    mal_text1 = "The team had 6 malicious robots which purposefully attempt to block doorways in the "
+    mal_text2 =  "environment, making it more difficult for healthy robots to explore."
     # Loop until all the experiments given in list_of_configs have been run once
-    while test_number <= len(list_of_configs) and not is_test_complete_b:
+    while test_number <= 1:
         # Blank the screen so old menu's aren't displayed behind new ones
         draw_menu_background()
 
@@ -792,25 +842,59 @@ def run_experimental_block(list_of_configs, control_active, show_empowerment, us
         elif current_menu_id == 50:
             experimental_block_2_setup_m.update(events)
             experimental_block_2_setup_m.draw(menu_screen)
+
+        elif current_menu_id == 93:
+            # These lines reset the sliders on the post question menus to their default values.  
+            question_window.get_widget('behaviour_perception').reset_value()          
+            test_start_setup_m.update(events)
+            test_start_setup_m.draw(menu_screen)
         
         elif current_menu_id == 90:
             # These lines reset the sliders on the post question menus to their default values.  
             #   There may be a better way to do this via a call back.
             # post_test_questions_m1.get_widget('time').reset_value()
             # post_test_questions_m2.get_widget('faultOrMal').reset_value()
-            post_test_questions_m2.get_widget('behaviour_perception').reset_value()
-            test_start_setup_m.update(events)
-            test_start_setup_m.draw(menu_screen)
+
+            question_window.update(events)
+            question_window.draw(menu_screen)
         
+
         elif current_menu_id == 91:
-            post_test_questions_m1.update(events)
-            post_test_questions_m1.draw(menu_screen)
-       
+            
+            split = config.split('_')[2]
+
+            text = "In the previous trial, the robot team was showing "+answer_dict[int(split)]+" behaviour."
+            if answer_dict[int(split)] == 'faulty':
+                text2 = fault_text1
+                text3 = fault_text2
+            else:
+                text2 = mal_text1
+                text3 = mal_text2
+     
+            post_trial1.get_widget('answer_text1').set_title(text)
+            post_trial1.get_widget('answer_text2').set_title(text2)
+            post_trial1.get_widget('answer_text3').set_title(text3)
+            post_trial1.update(events)
+            post_trial1.draw(menu_screen)
+
         elif current_menu_id == 92:
-            post_test_questions_m2.update(events)
-            post_test_questions_m2.draw(menu_screen)
-            # is_test_complete_b = True
-        
+            
+            split = config.split('_')[2]
+
+            text = "In the previous trial, the robot team was showing "+answer_dict[int(split)]+" behaviour."
+            if answer_dict[int(split)] == 'faulty':
+                text2 = fault_text1
+                text3 = fault_text2
+            else:
+                text2 = mal_text1
+                text3 = mal_text2
+     
+            post_trial2.get_widget('answer_text1').set_title(text)
+            post_trial2.get_widget('answer_text2').set_title(text2)
+            post_trial2.get_widget('answer_text3').set_title(text3)
+            post_trial2.update(events)
+            post_trial2.draw(menu_screen)
+       
         else:
             # the menu is outside the list for the experimental block so mark as complete
             is_test_complete_b = True
@@ -834,8 +918,6 @@ def run_experiment():
     global control_active
 
     # Initialise the dynamic parameters to be set later
-    show_empowerment = None
-    use_taskweighted_empowerment = None
 
     control_active = None
     
@@ -848,24 +930,37 @@ def run_experiment():
     # else:
     #     block_order = (['no_empowerment_shown', 'empowerment_shown'])
 
-    current_menu_id = 50
+    block_order = ['passive', 'active']
+
+    
+    current_menu_id = 40
     # determine the order to run the sequence
     config_order = np.random.permutation(len(LIVETEST_SEQUENCE_A))
     configs = np.array(LIVETEST_SEQUENCE_A)
     show_empowerment = True
     # Set whether users can control the swarm
-    control_active = True
+   
 
-    
-
-        # shuffle the test sequence order
+    # shuffle the test sequence order
     # print(f"I'm running experiment block {block} with the config order {config_order}")
     configs = configs[config_order]
-    # print('Configs for experiment block')
-    run_experimental_block(configs.tolist(), control_active, show_empowerment, use_taskweighted_empowerment)
+
+    # Run each block of trials
+    for block in block_order:
+
+        if block == 'passive':
+            control_active = False
+        else:
+            control_active = True
+            #  for second run set menu to start with active instructions
+            current_menu_id = 50
+            print('RUNNING THE ACTIVE BLOCK')
+
+        # print('Configs for experiment block')
+        run_experimental_block(configs.tolist(), control_active)
 
     # set the menu ID to the post experiment questions and debreif
-    current_menu_id = 0
+    current_menu_id = 60
     # this should return to main()
     return
 #end function
@@ -885,9 +980,7 @@ def saveAndQuit():
 #end function
 
 
-def sim_animate(i, timesteps, control_active, agent_pos, max_length,
-                                trails, malicious_trails, faulty_pos,
-                                sim_speed, totSwarm_size):
+def sim_animate(i, timesteps, control_active, agent_pos, max_length, trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size, agents_withFaults, display_abnormal):
 
     # Check gird intersection
     #grid_check(swarmy)
@@ -916,7 +1009,7 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
     total_agentSize = swarmy.size + malicious_blockers
     # input()
     pos_variance = 4
-    if i%9 == 0 and len(agent_set) >= 1:
+    if i%15 == 0 and len(agent_set) >= 1:
 
         # At each step pick a random agent to spawn
         pick = np.random.choice(agent_set)
@@ -994,13 +1087,27 @@ def sim_animate(i, timesteps, control_active, agent_pos, max_length,
     # Pass in positions of healthy swarm and malicious agents (blockers)
 
     SimRecorder.record_Step(agents)
+
+   
+    faulty_indicies = np.where(agents_withFaults == 1)[0]
+    # Highlight agents which are faulty
+    if display_abnormal == True and len(faulty_indicies) != 0:
+
+        positions = swarmy.agents[agents_withFaults == 1]
+        # print('fault position data: ', positions)
+        faulty_pos.set_data(positions.T[0] + 1, positions.T[1] + 1)
+    else:
+        faulty_pos.set_data([],[])
     
-    if (i == timesteps - 1):
-        plt.close()
+    # if (i == timesteps - 1):
+    #     plt.close(fig)
  
     return (trails, malicious_trails, agent_pos, faulty_pos, )
 
-def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_empowerment=False, control_active=False, use_task_weighted_empowerment=False):
+
+
+
+def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], control_active=False, display_abnormal=False):
     """
     Run's a single trial of the empowerment simulation
 
@@ -1013,13 +1120,16 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
 
     # Menu callbacks aren't dynamic so need to do some tricks if the config file name isn't supplied but a list is
-    if config_file_name == '' and not list_of_configs:
-        raise Exception("list of configs can't be blank if no config file name provided!!")
-    elif config_file_name == '':
-        config_file_name = list_of_configs[test_number]
-    show_empowerment = False
-    
+    # if config_file_name == '' and not list_of_configs:
+    #     raise Exception("list of configs can't be blank if no config file name provided!!")
+    # elif config_file_name == '':
+    #     config_file_name = list_of_configs[test_number]
+    # elif config_file_name == '' and display_abnormal == True:
+    #     config_file_name = list_of_configs[test_number-1]
 
+    # config_file_name = random.choice(list_of_configs)
+
+   
     if "_fam_2" in config_file_name:
          control_active = True
     
@@ -1028,7 +1138,11 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     #   i.e. those which are set at runtime rather than written in the config file
     #   These are useful for naming log files!
     config_name_with_parameters = config_file_name
-   
+    # if show_empowerment:
+    #     config_name_with_parameters = config_name_with_parameters + "_empshown"
+
+    # if use_task_weighted_empowerment:
+    #     config_name_with_parameters = config_name_with_parameters + "_taskweighted"
 
     if control_active == True:
         config_name_with_parameters = config_file_name + "_active"
@@ -1036,8 +1150,15 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
         config_name_with_parameters = config_file_name + "_passive"
 
 
+    # print(f'running a simulation with config {config_file_name} and #test {test_number}, exiting to menu {exit_to_menu}')
+    # if not DEBUG_MODE_B:
+    #     sim.main(config_file_name, show_empowerment, use_task_weighted_empowerment, sim_session_id=session_id, log_file_name=config_name_with_parameters)
+
+
     # ======================= Very important! needs to be set in order to save the config name for results =====================
     last_config_run = config_name_with_parameters
+
+    print('This is the last config: ', last_config_run)
 
     # Load data from config file ----------------------------
 
@@ -1046,7 +1167,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     # print(cfg)
 
 
-    fig, ax1 = plt.subplots( figsize=(11,11), dpi=80, facecolor='w', edgecolor='k')
+    fig, ax1 = plt.subplots( figsize=(11,11), dpi=100, facecolor='w', edgecolor='k')
    
     ax1.set_aspect('equal')
     
@@ -1069,15 +1190,8 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     fsize = 12
 
-    if "_fam_3" in config_file_name:
-        # fixed seed for tutorial 3 where collisions are shown
-        seed = 2665807705
-    elif "_fam_1" in config_file_name or "_fam_2" in config_file_name:
-        # fixed seed for normal behaviour in tut 1 and 2
-        seed = 1923979586
-    else:
-        seed = random.randrange((2**32) - 1)
-    # seed = 99999
+    # Always keep seed the same for the purpose of replays
+    seed = 99999
 
     random.seed(seed)
     np.random.seed(seed)
@@ -1104,9 +1218,8 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     # global timesteps
 
-    # timesteps = cfg["timesteps"]
+    timesteps = int(cfg["timesteps"]/10)
 
-    timesteps = 50
 
     # ===================== Swarm Faults/Malicious behaviours =========================
 
@@ -1164,7 +1277,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     swarmy = faulty_swarm.swarm()
     swarmy.size = totSwarm_size - malicious_blockers
-    swarmy.speed = 0.3
+    swarmy.speed = 0.2
     swarmy.origin = env_map.swarm_origin[:]
     swarmy.map = env_map
     swarmy.gen_agents()
@@ -1177,7 +1290,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     if blockers_active == True:
         malicious_swarm = faulty_swarm.malicious_swarm()
         malicious_swarm.size = malicious_blockers
-        malicious_swarm.speed = 0.3
+        malicious_swarm.speed = 0.2
         malicious_swarm.origin = env_map.swarm_origin[:]
         malicious_swarm.map = env_map
         malicious_swarm.gen_agents()
@@ -1185,7 +1298,7 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     else:
         malicious_swarm = faulty_swarm.malicious_swarm()
         malicious_swarm.size = 10
-        malicious_swarm.speed = 0.3
+        malicious_swarm.speed = 0.2
         malicious_swarm.origin = env_map.swarm_origin[:]
         malicious_swarm.map = env_map
         malicious_swarm.gen_agents()
@@ -1279,7 +1392,6 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     # # -------------- Agents with slow motors ---------------
 
 
-
     # # Define default motor speeds for agents
     swarmy.motor_error = np.zeros(swarmy.size)
     swarmy.motor_speeds = np.ones(swarmy.size)
@@ -1362,7 +1474,6 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     sim_speed = list()
 
     # Creat simulation data logger
-
     global SimRecorder
     # import model.SimLog
     SimRecorder = SimLog.data_recorder()
@@ -1371,27 +1482,28 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
 
     ax1.get_xaxis().set_visible(False)
     ax1.get_yaxis().set_visible(False)
-    
 
     
     anim = animation.FuncAnimation(fig, sim_animate, frames=timesteps, interval=15, blit=True, repeat = False,
                                    fargs = (timesteps, control_active, agent_pos, max_length,
-                                   trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size,))
+                                   trails, malicious_trails, faulty_pos, sim_speed, totSwarm_size, agents_withFaults, display_abnormal))
 
     mng = plt.get_current_fig_manager()
     mng.full_screen_toggle()
 
 
     plt.show()
-    anim
+    # anim
 
     # Save the coverage achieved 
     SimRecorder.record_coverage(coverage_data)
 
+    global RESULTS_DIR
+
     if control_active == True:
-        file_name = 'Results/' + session_id +'/'+ config_file_name + '_Active'
+        file_name = RESULTS_DIR + session_id +'/'+ config_file_name + '_Active'
     else:
-        file_name = 'Results/' + session_id +'/'+ config_file_name + '_Passive'
+        file_name = RESULTS_DIR + session_id +'/'+ config_file_name + '_Passive'
 
     # Save simulation data to file
     SimRecorder.pickleLog(file_name)
@@ -1405,6 +1517,8 @@ def run_swarmsim(exit_to_menu, config_file_name='', list_of_configs=[], show_emp
     # increment the number of tests completed
     test_number += 1
     return
+
+
 
 def on_press(event):
     # print('press', event.key)
@@ -1428,7 +1542,18 @@ def on_press(event):
     SimRecorder.user_log.record_event(event.key, swarmy.time)
     # print('User input log: ', SimRecorder.user_log.events)
 
-  
+    # ---------- Record command event
+    # sys.stdout.flush()
+
+    global plot_happiness
+    global plot_faulty
+
+    if event.key == 'h':
+        # turn on/off agent happiness display
+        plot_happiness = np.logical_not(plot_happiness)
+    if event.key == 'j':
+        # turn on/off agent happiness display
+        plot_faulty = np.logical_not(plot_faulty)
 
 
 def run_tutorial():
@@ -1515,10 +1640,16 @@ def main():
 
     # Create and setup the menus
     start_m = start_menu_setup()
-  
+    # information_1_m = information_sheet1_setup()
+    # information_2_m = information_sheet2_setup()
+    # information_3_m = information_sheet3_setup()
+    # information_4_m = information_sheet4_setup()
+    # information_5_m = information_sheet5_setup()
     instructions_m1 = instructions_menu_setup1()
     instructions_m2 = instructions_menu_setup2()
-    details_m = details_setup()
+    # details_m = details_setup()
+
+    final_screen = end_screen()
     # debrief_setup_m = debrief_setup()
     # personal_details_m = personal_details_setup()
     # final_consent_m = final_consent_setup()
@@ -1530,15 +1661,35 @@ def main():
 
         # Handle the event queue
         events = pygame.event.get()
-        # for event in events:
-        #     if event.type == pygame.QUIT:
-        #         # menu_log.save_responses(details_m,60)
-        #         saveAndQuit()
+        for event in events:
+            if event.type == pygame.QUIT:
+                # menu_log.save_responses(details_m,60)
+                saveAndQuit()
 
         # Select the right menu for the program state, update it (check if buttons have been pushed etc) and draw.
         if current_menu_id == 0:
             start_m.update(events)
             start_m.draw(menu_screen)
+        elif current_menu_id == 10:
+            # information_1_m.update(events)
+            # information_1_m.draw(menu_screen)
+            pass
+        elif current_menu_id == 11:
+            # information_2_m.update(events)
+            # information_2_m.draw(menu_screen)
+            pass
+        elif current_menu_id == 12:
+            # information_3_m.update(events)
+            # information_3_m.draw(menu_screen)
+            pass
+        elif current_menu_id == 13:
+            # information_4_m.update(events)
+            # information_4_m.draw(menu_screen)
+            pass
+        elif current_menu_id == 14:
+            # information_5_m.update(events)
+            # information_5_m.draw(menu_screen)
+            pass
         elif current_menu_id == 20:
             instructions_m1.update(events)
             instructions_m1.draw(menu_screen)
@@ -1548,8 +1699,8 @@ def main():
         # menu_id 30-35 are handled in run_tutorial()
         # menu_id 40,50,90-92 are handled in run_experiment()
         elif current_menu_id == 60:
-            details_m.update(events)
-            details_m.draw(menu_screen)
+            final_screen.update(events)
+            final_screen.draw(menu_screen)
         elif current_menu_id == 70:
             # debrief_setup_m.update(events)
             # debrief_setup_m.draw(menu_screen)
